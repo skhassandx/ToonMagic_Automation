@@ -1,7 +1,7 @@
 import os
 import json
 from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
-from config.settings import ANIMATED_DIR, AUDIO_DIR, FINAL_VIDEOS_DIR, STORIES_DIR
+from config.settings import ANIMATED_DIR, AUDIO_DIR, FINAL_VIDEOS_DIR
 
 def create_final_videos(story_path):
     # গল্পের ফাইলটি পড়ে দেখবে কতগুলো সিন আছে
