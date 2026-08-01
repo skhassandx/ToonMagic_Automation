@@ -1,5 +1,4 @@
 replicate>=0.25.0
-deapi-python-sdk>=1.0.0
 moviepy==1.0.3
 requests>=2.31.0
 google-api-python-client>=2.118.0
