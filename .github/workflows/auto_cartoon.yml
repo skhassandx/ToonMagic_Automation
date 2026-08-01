@@ -37,13 +37,3 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
           python main.py
-
-      - name: Commit & Push Generated Backups to Repository
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "ToonMagic-Bot"
-          git config --global user.email "bot@toonmagic.internal"
-          git add backup/
-          git commit -m "Auto Backup: New Story, Scenes & Videos [skip ci]" || echo "No changes to commit"
-          git push
