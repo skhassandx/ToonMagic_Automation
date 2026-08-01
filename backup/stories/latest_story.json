@@ -1,0 +1,45 @@
+{
+    "title": "টুটুল ও জাদুর বন #95",
+    "scenes": [
+        {
+            "scene_number": 1,
+            "narration": "এক গ্রামে ছিল টুটুল নামের এক ছোট্ট ছেলে। তার খুব শখ ছিল নতুন কিছু খোঁজার।",
+            "image_prompt": "3D Pixar style, cute 8-year-old boy in red shirt standing in a sunny village"
+        },
+        {
+            "scene_number": 2,
+            "narration": "একদিন সে গ্রামের পেছনের এক অদ্ভুত জঙ্গলে গিয়ে হাজির হলো।",
+            "image_prompt": "3D Pixar style, cute boy in red shirt entering a magical glowing forest"
+        },
+        {
+            "scene_number": 3,
+            "narration": "সেখানে সে পেলো এক জাদুর পেন্সিল, যা থেকে আলো বেরোচ্ছিল।",
+            "image_prompt": "3D Pixar style, cute boy looking amazed at a glowing magical pencil in his hand"
+        },
+        {
+            "scene_number": 4,
+            "narration": "পেন্সিল দিয়ে মাটিতে সে একটি পাখির ছবি আঁকলো।",
+            "image_prompt": "3D Pixar style, cute boy drawing a beautiful bird on the ground"
+        },
+        {
+            "scene_number": 5,
+            "narration": "অবাক কান্ড! পাখিটি সত্যি সত্যি জীবন্ত হয়ে আকাশে উড়ে গেল।",
+            "image_prompt": "3D Pixar style, glowing magical bird flying away from the cute boy"
+        },
+        {
+            "scene_number": 6,
+            "narration": "এরপর সে আঁকলো একটি বিশাল সুন্দর ফুল।",
+            "image_prompt": "3D Pixar style, cute boy looking at a giant glowing magical flower"
+        },
+        {
+            "scene_number": 7,
+            "narration": "ফুলের গন্ধে বনের সব পাখিরা তার কাছে ছুটে এলো।",
+            "image_prompt": "3D Pixar style, many cute birds surrounding the happy boy with red shirt"
+        },
+        {
+            "scene_number": 8,
+            "narration": "টুটুল বুঝতে পারলো, জাদুর পেন্সিল দিয়ে সে সবার মুখে হাসি ফোটাতে পারবে।",
+            "image_prompt": "3D Pixar style, cute boy laughing happily with magical creatures around him"
+        }
+    ]
+}
