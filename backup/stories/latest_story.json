@@ -1,25 +1,25 @@
 {
-    "title": "ছোট্ট টিয়া পাখি ও নদীর রাজহাঁস #2872",
+    "title": "একতার শক্তি: ছোট্ট টুটুনের গল্প",
     "scenes": [
         {
             "scene_number": 1,
-            "narration": "আজকের গল্প ছোট্ট টিয়া পাখি ও নদীর রাজহাঁস। সুন্দর এক সকালের ঘটনা।",
-            "image_prompt": "3D Pixar style cartoon scene, Cute Parrot and Swan in River Adventure, sunny morning"
+            "narration": "এক সুন্দর সবুজ বনে বাস করতো ছোট্ট খরগোশ টুটুন, কাঠবিড়ালি টিটু আর মিষ্টি পাখি টুনি। তারা প্রতিদিন একসাথে সুস্বাদু ফল খেতো এবং খুব আনন্দ করে খেলাধুলো করতো।",
+            "image_prompt": "3D Pixar style cartoon scene, a cute white fluffy bunny rabbit, a cheerful squirrel, and a small colorful bird sharing bright red berries together in a lush magical sunny forest, vibrant colors, expressive happy eyes, highly detailed."
         },
         {
             "scene_number": 2,
-            "narration": "হঠাৎ তাদের সামনে একটি নতুন চমক বা সমস্যা দেখা দিল।",
-            "image_prompt": "3D Pixar style cartoon scene, Cute Parrot and Swan in River Adventure, mysterious surprise"
+            "narration": "একদিন হঠাৎ এক বিশাল রাগী নেকড়ে বনে এসে উপস্থিত হলো। নেকড়েটি গর্জন করে বলল, 'সব ফল এখন থেকে আমার! তোমরা এখান থেকে পালিয়ে যাও!' এতে ছোট ছোট প্রাণীরা খুব ভয় পেয়ে গেল।",
+            "image_prompt": "3D Pixar style cartoon scene, a big scary dark wolf growling greedily, while a small cute rabbit and squirrel cower behind a bush in panic, dramatic lighting, detailed lush forest background."
         },
         {
             "scene_number": 3,
-            "narration": "সবাই বুদ্ধিমত্তা দিয়ে একসাথে সমস্যার সুন্দর সমাধান করল।",
-            "image_prompt": "3D Pixar style cartoon scene, Cute Parrot and Swan in River Adventure, solving problem happily"
+            "narration": "কিন্তু টুটুন ভয় না পেয়ে বুদ্ধি বাঁধলো। সে বনের সব ছোট বন্ধুদের একসাথে জড়ো করল এবং সবাই মিলে লতা-পাতা দিয়ে নেকড়েটিকে আটকানোর একটি বড় ফাঁদ তৈরি করল।",
+            "image_prompt": "3D Pixar style cartoon scene, a clever little rabbit giving instructions to small forest animals like mice, birds, and squirrels, working together secretly with vines and fruit nets, smart cute expressions, whimsical colorful cartoon art."
         },
         {
             "scene_number": 4,
-            "narration": "এখান থেকে আমরা শিখলাম ঐক্যবদ্ধ থাকলে সব বাধাই জয় করা যায়।",
-            "image_prompt": "3D Pixar style cartoon scene, Cute Parrot and Swan in River Adventure, happy ending with friends"
+            "narration": "সবাই একসাথে দড়ি টেনে নেকড়েটিকে জালে আটকে ফেলল! ভয় পেয়ে নেকড়েটি বন ছেড়ে পালিয়ে গেল। সেদিন সবাই শিখল— 'একতাই বল, সবাই মিলে কাজ করলে যেকোনো বিপদ জয় করা যায়।'",
+            "image_prompt": "3D Pixar style cartoon scene, the big wolf trapped under a giant woven vine net running away scared, while all small cute animals cheer happily and celebrate together in a sunny green forest, joyous atmosphere, warm sunlight."
         }
     ]
 }
