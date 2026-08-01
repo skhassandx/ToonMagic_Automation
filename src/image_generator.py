@@ -3,6 +3,7 @@ import json
 import urllib.request
 import urllib.parse
 import time
+import random
 from config.settings import IMAGES_DIR
 
 def generate_images(story_path):
@@ -14,16 +15,16 @@ def generate_images(story_path):
         img_path = os.path.join(IMAGES_DIR, f"scene_{scene_num}.jpg")
 
         if not os.path.exists(img_path):
-            print(f"🎨 Generating Image for Scene {scene_num} via Pollinations AI...")
+            print(f"🎨 Generating Image for Scene {scene_num}...")
             
-            # গল্পের নির্দিষ্ট দৃশ্যের সাথে মিলিয়ে ইউনিক প্রম্পট নেবে
-            prompt = scene.get('image_prompt', f"3D Pixar style cartoon animation scene, highly detailed, vibrant colors, scene {scene_num}")
+            prompt = scene.get('image_prompt', "Vertical 9:16 format, 3D Pixar style cartoon scene")
             encoded_prompt = urllib.parse.quote(prompt)
+            seed = random.randint(1, 1000000)
             
-            image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=576&nologo=true"
+            # Width ও Height পরিবর্তন করে 9:16 (Shorts) করা হয়েছে
+            image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=576&height=1024&nologo=true&seed={seed}"
             
-            max_retries = 3
-            for attempt in range(max_retries):
+            for attempt in range(3):
                 try:
                     req = urllib.request.Request(image_url, headers={'User-Agent': 'Mozilla/5.0'})
                     with urllib.request.urlopen(req, timeout=60) as response, open(img_path, 'wb') as out_file:
@@ -33,8 +34,4 @@ def generate_images(story_path):
                     break
                 except Exception as e:
                     print(f"⚠️ Error on attempt {attempt+1}: {e}")
-                    if attempt < max_retries - 1:
-                        print("🔄 Retrying in 5 seconds...")
-                        time.sleep(5)
-                    else:
-                        print(f"❌ Failed to generate image for scene {scene_num}.")
+                    time.sleep(5)
