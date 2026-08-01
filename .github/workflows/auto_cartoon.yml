@@ -31,8 +31,7 @@ jobs:
 
       - name: Run ToonMagic Automation Script
         env:
-          HF_API_TOKEN: ${{ secrets.HF_API_TOKEN }}
-          DEAPI_API_TOKEN: ${{ secrets.DEAPI_API_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
