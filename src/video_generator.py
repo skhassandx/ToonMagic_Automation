@@ -4,7 +4,7 @@ from moviepy.editor import ImageClip
 from config.settings import IMAGES_DIR, ANIMATED_DIR
 
 def animate_scenes(story_path):
-    # কোনো API লাগবে না! গিটহাব নিজেই ছবিকে ভিডিও বানাবে।
+    # কোনো পেইড API ছাড়াই গিটহাব নিজেই ছবিকে ভিডিও বানাবে
     with open(story_path, 'r', encoding='utf-8') as f:
         story_data = json.load(f)
 
