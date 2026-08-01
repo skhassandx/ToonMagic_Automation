@@ -2,16 +2,16 @@ import os
 import json
 import time
 import requests
-import replicate
+from deapi import DeapiClient
 from config.settings import IMAGES_DIR, ANIMATED_DIR
 
 def animate_scenes(story_path):
-    token = os.environ.get("REPLICATE_API_TOKEN")
+    token = os.environ.get("DEAPI_API_TOKEN")
     if not token:
-        print("⚠️ REPLICATE_API_TOKEN missing. Skipping animation rendering.")
+        print("⚠️ DEAPI_API_TOKEN missing. Skipping animation rendering.")
         return
 
-    os.environ["REPLICATE_API_TOKEN"] = token
+    client = DeapiClient(api_key=token)
 
     with open(story_path, 'r', encoding='utf-8') as f:
         story_data = json.load(f)
@@ -22,22 +22,26 @@ def animate_scenes(story_path):
         vid_path = os.path.join(ANIMATED_DIR, f"scene_{scene_num}.mp4")
 
         if os.path.exists(img_path) and not os.path.exists(vid_path):
-            print(f"🎬 Animating Scene {scene_num} using Minimax...")
+            print(f"🎬 Animating Scene {scene_num} using deAPI (Ltx2_19B)...")
             try:
-                with open(img_path, "rb") as input_file:
-                    output = replicate.run(
-                        "minimax/video-01",
-                        input={
-                            "first_frame_image": input_file,
-                            "prompt": "3d animated cartoon style, smooth camera movement, high quality fluid animation"
-                        }
-                    )
-                vid_url = output[0] if isinstance(output, list) else str(output)
-                res = requests.get(vid_url)
+                job = client.video.animate(
+                    prompt="3d animated cartoon style, smooth camera movement, high quality fluid animation",
+                    first_frame_image=img_path,
+                    model="Ltx2_19B_Dist_FP8", # deAPI তে থাকা ভিডিও মডেল
+                    seed=42,
+                    width=1024,
+                    height=576,
+                    frames=120,
+                    fps=24,
+                )
+                
+                result = job.wait()
+                
+                res = requests.get(result.result_url)
                 with open(vid_path, "wb") as f_out:
                     f_out.write(res.content)
                 print(f"✅ Scene {scene_num} animation saved!")
             except Exception as e:
                 print(f"❌ Error in scene {scene_num}: {e}")
             
-            time.sleep(10)
+            time.sleep(5)
