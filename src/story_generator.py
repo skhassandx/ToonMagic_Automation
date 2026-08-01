@@ -13,7 +13,6 @@ def generate_story_and_audio():
     if gemini_key:
         print("🧠 Generating unique daily story using Google Gemini AI...")
         try:
-            # লেটেস্ট Google GenAI ক্লায়েন্ট ব্যবহার করা হয়েছে (কোনো ওয়ার্নিং আসবে না)
             client = genai.Client(api_key=gemini_key)
             
             prompt = """
@@ -33,8 +32,9 @@ def generate_story_and_audio():
             [VERY IMPORTANT]: The 'image_prompt' MUST be in English. Decide a random number of scenes between 5 and 8. You MUST describe the EXACT same main character physically in EVERY single image_prompt so the character looks consistent.
             """
             
+            # লেটেস্ট gemini-3.6-flash মডেল ব্যবহার করা হয়েছে
             response = client.models.generate_content(
-                model='gemini-1.5-flash',
+                model='gemini-3.6-flash',
                 contents=prompt
             )
             
