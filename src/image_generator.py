@@ -6,8 +6,6 @@ import time
 from config.settings import IMAGES_DIR
 
 def generate_images(story_path):
-    # কোনো API Token লাগবে না!
-
     with open(story_path, 'r', encoding='utf-8') as f:
         story_data = json.load(f)
 
@@ -18,9 +16,10 @@ def generate_images(story_path):
         if not os.path.exists(img_path):
             print(f"🎨 Generating Image for Scene {scene_num} via Pollinations AI...")
             
-            prompt = f"3D Pixar style cartoon animation scene, highly detailed, vibrant colors, scene number {scene_num}"
+            # গল্পের নির্দিষ্ট দৃশ্যের সাথে মিলিয়ে ইউনিক প্রম্পট নেবে
+            prompt = scene.get('image_prompt', f"3D Pixar style cartoon animation scene, highly detailed, vibrant colors, scene {scene_num}")
             encoded_prompt = urllib.parse.quote(prompt)
-            # Pollinations AI Endpoint (Free & No Token Required)
+            
             image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=576&nologo=true"
             
             max_retries = 3
@@ -30,7 +29,7 @@ def generate_images(story_path):
                     with urllib.request.urlopen(req, timeout=60) as response, open(img_path, 'wb') as out_file:
                         out_file.write(response.read())
                     print(f"✅ Scene {scene_num} image generated successfully!")
-                    time.sleep(2) # সার্ভারে চাপ কমানোর জন্য একটু বিরতি
+                    time.sleep(2)
                     break
                 except Exception as e:
                     print(f"⚠️ Error on attempt {attempt+1}: {e}")
