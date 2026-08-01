@@ -28,22 +28,47 @@ def upload_to_youtube_headless(video_path):
     try:
         youtube = build('youtube', 'v3', credentials=creds)
         
-        # জেমিনাইয়ের তৈরি করা গল্পের JSON ফাইল থেকে নাম পড়া
         story_path = os.path.join(STORIES_DIR, "latest_story.json")
         with open(story_path, 'r', encoding='utf-8') as f:
             story_data = json.load(f)
             
-        # গল্পের টাইটেলটিই ইউটিউবের টাইটেল হিসেবে সেট করা
-        video_title = f"{story_data.get('title', 'বাংলা মজার কার্টুন')} ✨ #Shorts #CartoonBangla"
-        video_desc = f"{story_data.get('title')} - সম্পূর্ণ নতুন বাংলা কার্টুন গল্প।\n\n#BanglaCartoon #MoralStories #ToonMagicBangla #KidsVideo"
+        title = story_data.get('title', 'বাংলা মজার কার্টুন')
+        
+        # গল্পের প্রথম লাইনটি নিয়ে ডেসক্রিপশনে দেওয়ার জন্য এক্সট্র্যাক্ট করা
+        first_scene = ""
+        if 'scenes' in story_data and len(story_data['scenes']) > 0:
+            first_scene = story_data['scenes'][0].get('narration', '')
+            
+        video_title = f"{title} ✨ | Bangla Cartoon | #Shorts"
+        
+        # এসইও (SEO) ফ্রেন্ডলি ডেসক্রিপশন তৈরি
+        video_desc = f"""{title} - সম্পূর্ণ নতুন বাংলা কার্টুন গল্প।
+
+গল্পের সারাংশ:
+{first_scene} জানতে হলে ভিডিওটি শেষ পর্যন্ত দেখুন! 
+
+ছোটদের জন্য দারুণ শিক্ষণীয় এবং মজার এই 3D অ্যানিমেশন কার্টুন। আমাদের চ্যানেলে প্রতিদিন নতুন নতুন রূপকথার গল্প, ভূতের গল্প এবং মজার কার্টুন আপলোড করা হয়। 
+
+👉 সাবস্ক্রাইব করে আমাদের সাথেই থাকুন!
+
+#BanglaCartoon #BengaliFairyTales #ToonMagicBangla #KidsCartoon #BanglaGolpo #MoralStories #3DAnimation #Shorts #CartoonBangla #RupkotharGolpo #BengaliStories
+"""
         
         print(f"📺 Uploading Video: {video_title}")
+        
+        # হাই-ভলিউম সার্চ ট্যাগ যুক্ত করা হলো
+        tags_list = [
+            'bangla cartoon', 'cartoon bangla', 'bengali fairy tales', 
+            'rupkothar golpo', 'bangla golpo', 'moral stories in bengali', 
+            'kids cartoon', '3d animation bangla', 'toonmagic', 'shorts feed', 
+            'trending shorts'
+        ]
         
         body = {
             'snippet': {
                 'title': video_title,
                 'description': video_desc,
-                'tags': ['bangla cartoon', 'cartoon bangla', 'moral stories', 'kids video', 'animation', 'shorts'],
+                'tags': tags_list,
                 'categoryId': '1' # Film & Animation
             },
             'status': {
