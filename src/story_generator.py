@@ -16,7 +16,7 @@ def generate_story_and_audio():
         print("🧠 Generating unique daily story using Google Gemini AI...")
         try:
             genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-3.6-flash')
             
             prompt = """
             বাংলায় একটি দারুণ আকর্ষণীয় ও শিক্ষণীয় শিশুদের কার্টুন গল্পের স্ক্রিপ্ট তৈরি করো। 
