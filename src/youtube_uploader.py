@@ -32,48 +32,46 @@ def upload_to_youtube_headless(video_path):
         with open(story_path, 'r', encoding='utf-8') as f:
             story_data = json.load(f)
             
-        title = story_data.get('title', 'বাংলা মজার কার্টুন')
+        title = story_data.get('title', 'মজার বাংলা কার্টুন গল্প')
+        dynamic_tags = story_data.get('tags', [])
         
-        # গল্পের প্রথম লাইনটি নিয়ে ডেসক্রিপশনে দেওয়ার জন্য এক্সট্র্যাক্ট করা
+        base_tags = [
+            'bangla cartoon', 'cartoon bangla', 'bengali fairy tales', 
+            'rupkothar golpo', 'bangla golpo', 'kids cartoon', 'shorts feed', 'trending shorts'
+        ]
+        
+        all_tags = list(set(dynamic_tags + base_tags))
+        
         first_scene = ""
         if 'scenes' in story_data and len(story_data['scenes']) > 0:
             first_scene = story_data['scenes'][0].get('narration', '')
             
         video_title = f"{title} ✨ | Bangla Cartoon | #Shorts"
         
-        # এসইও (SEO) ফ্রেন্ডলি ডেসক্রিপশন তৈরি
         video_desc = f"""{title} - সম্পূর্ণ নতুন বাংলা কার্টুন গল্প।
 
 গল্পের সারাংশ:
-{first_scene} জানতে হলে ভিডিওটি শেষ পর্যন্ত দেখুন! 
+{first_scene} 
 
-ছোটদের জন্য দারুণ শিক্ষণীয় এবং মজার এই 3D অ্যানিমেশন কার্টুন। আমাদের চ্যানেলে প্রতিদিন নতুন নতুন রূপকথার গল্প, ভূতের গল্প এবং মজার কার্টুন আপলোড করা হয়। 
+সম্পূর্ণ কাহিনী জানতে ভিডিওটি শেষ পর্যন্ত দেখুন! 
 
-👉 সাবস্ক্রাইব করে আমাদের সাথেই থাকুন!
+👉 চ্যানেলটি সাবস্ক্রাইব করে বেল আইকনটি প্রেস করে রাখুন!
 
-#BanglaCartoon #BengaliFairyTales #ToonMagicBangla #KidsCartoon #BanglaGolpo #MoralStories #3DAnimation #Shorts #CartoonBangla #RupkotharGolpo #BengaliStories
+#BanglaCartoon #BengaliFairyTales #ToonMagicBangla #KidsCartoon #BanglaGolpo #Shorts #{title.replace(' ', '')}
 """
         
-        print(f"📺 Uploading Video: {video_title}")
-        
-        # হাই-ভলিউম সার্চ ট্যাগ যুক্ত করা হলো
-        tags_list = [
-            'bangla cartoon', 'cartoon bangla', 'bengali fairy tales', 
-            'rupkothar golpo', 'bangla golpo', 'moral stories in bengali', 
-            'kids cartoon', '3d animation bangla', 'toonmagic', 'shorts feed', 
-            'trending shorts'
-        ]
+        print(f"📺 Uploading Video Title: {video_title}")
         
         body = {
             'snippet': {
                 'title': video_title,
                 'description': video_desc,
-                'tags': tags_list,
+                'tags': all_tags,
                 'categoryId': '1' # Film & Animation
             },
             'status': {
                 'privacyStatus': 'public',
-                'madeForKids': True
+                'madeForKids': False  # Made for kids বন্ধ করা হলো যেন কমেন্ট ও রিচ চালু থাকে
             }
         }
         
@@ -86,7 +84,7 @@ def upload_to_youtube_headless(video_path):
             if status:
                 print(f"⏳ Uploading... {int(status.progress() * 100)}%")
                 
-        print(f"✅ YouTube Shorts Uploaded! Link: https://youtube.com/shorts/{response['id']}")
+        print(f"✅ YouTube Shorts Uploaded Successfully! Link: https://youtube.com/shorts/{response['id']}")
         
     except Exception as e:
         print(f"❌ YouTube Upload Error: {e}")
