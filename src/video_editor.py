@@ -17,9 +17,18 @@ def create_final_videos(story_path):
         if os.path.exists(img_path) and os.path.exists(aud_path):
             audio_clip = AudioFileClip(aud_path)
             
-            # HD 1080x1920 রেজোলিউশনে সেট করা
+            # ইমেজ লোড করে অডিওর সমান লম্বা করা
             img_clip = ImageClip(img_path).set_duration(audio_clip.duration)
-            img_clip = img_clip.resize((1080, 1920))
+            
+            # সিনেমাটিক জুম-ইন ইফেক্ট (অ্যানিমেশন)
+            # এটি ছবিটিকে আস্তে আস্তে ১০% জুম করবে, ফলে ভিডিওটি জীবন্ত মনে হবে
+            def zoom_effect(t):
+                return 1 + 0.1 * (t / img_clip.duration)
+                
+            img_clip = img_clip.resize(zoom_effect)
+            
+            # ফাইনাল সাইজ 1080x1920 নিশ্চিত করা এবং ক্রপ করা
+            img_clip = img_clip.crop(x_center=img_clip.w/2, y_center=img_clip.h/2, width=1080, height=1920)
             img_clip = img_clip.set_audio(audio_clip)
             
             video_clips.append(img_clip)
@@ -28,23 +37,24 @@ def create_final_videos(story_path):
         print("⚠️ No clips found to merge.")
         return None, None
 
-    print(f"🎬 Merging all {len(video_clips)} scenes into Full HD 1080p Shorts...")
+    print(f"🎬 Merging {len(video_clips)} scenes with Cinematic Zoom Animation...")
     final_clip = concatenate_videoclips(video_clips, method="compose")
     
     shorts_path = os.path.join(FINAL_VIDEOS_DIR, "FINAL_CARTOON_SHORTS.mp4")
     
-    # High Bitrate 1080p Output
+    # হাই বিটরেটে রেন্ডার
     final_clip.write_videofile(
         shorts_path, 
         fps=24, 
         codec="libx264", 
         audio_codec="aac", 
         bitrate="8000k",
+        preset="ultrafast",
         verbose=False, 
         logger=None
     )
     
     final_clip.close()
     
-    print("🎉 High Quality Shorts Generated Successfully!")
+    print("🎉 Cinematic Animated Shorts Generated Successfully!")
     return shorts_path, shorts_path
