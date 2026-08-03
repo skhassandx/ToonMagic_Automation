@@ -1,7 +1,7 @@
 import os
 import json
+import base64
 from google import genai
-from google.genai import types  # 🌟 কনফিগ ফাইল সেট করার জন্য এটি ইমপোর্ট করা হলো
 from config.settings import IMAGES_DIR
 
 def generate_images(story_path):
@@ -9,6 +9,10 @@ def generate_images(story_path):
         story_data = json.load(f)
 
     api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        print("❌ CRITICAL ERROR: GEMINI_API_KEY not found!")
+        return False
+
     client = genai.Client(api_key=api_key)
     images_success = True
 
@@ -24,18 +28,22 @@ def generate_images(story_path):
         print(f"🎨 Generating Image for Scene {scene_num} using Gemini API...")
 
         try:
-            # 🌟 নতুন নিয়মে config এর ভেতরে রেশিও এবং ইমেজের সংখ্যা দেওয়া হলো
-            result = client.models.generate_images(
-                model='imagen-3.0-generate-001',
-                prompt=enhanced_prompt,
-                config=types.GenerateImagesConfig(
-                    number_of_images=1,
-                    aspect_ratio="9:16"
-                )
+            # 🌟 আপনার স্ক্রিনশট অনুযায়ী gemini-3.1-flash-image মডেল ব্যবহার
+            interaction = client.interactions.create(
+                model="gemini-3.1-flash-image",
+                input=enhanced_prompt
             )
-            for generated_image in result.generated_images:
-                generated_image.image.save(img_path)
-            print(f"✅ Scene {scene_num} generated with Gemini!")
+            
+            # Base64 এনকোডেড ডেটা রিসিভ করে ছবিতে সেভ করা
+            if interaction and interaction.output_text:
+                with open(img_path, "wb") as img_file:
+                    img_file.write(base64.b64decode(interaction.output_text))
+                print(f"✅ Scene {scene_num} generated with Gemini!")
+            else:
+                 print(f"❌ Failed to receive image data for Scene {scene_num}")
+                 images_success = False
+                 break
+                 
         except Exception as e:
             print(f"❌ Gemini Image Error: {e}")
             images_success = False
