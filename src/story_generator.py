@@ -12,7 +12,6 @@ def generate_story():
 
     genai.configure(api_key=api_key)
     
-    # র‍্যান্ডম গল্পের থিম নির্বাচন
     themes = [
         "a funny adventure of a clever fox and a lazy bear",
         "an emotional story about a little boy finding a lost puppy",
@@ -23,7 +22,6 @@ def generate_story():
     ]
     selected_theme = random.choice(themes)
     
-    # JSON ফরম্যাট ঠিক রাখার জন্য কড়া নির্দেশ
     prompt = f"""
     Write a short, engaging YouTube Shorts cartoon story in Bengali about {selected_theme}.
     The story must have exactly 5 scenes.
@@ -39,8 +37,7 @@ def generate_story():
           "scene_number": 1,
           "narration": "Bengali narration for scene 1",
           "image_prompt": "English prompt for image generation, highly detailed, 3D Pixar style"
-        }},
-        ... and so on up to 5 scenes
+        }}
       ]
     }}
     """
@@ -50,7 +47,6 @@ def generate_story():
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt)
         
-        # رسপন্স থেকে অনাকাঙ্ক্ষিত লেখা (যেমন ```json) সরিয়ে ফেলা
         response_text = response.text.strip()
         if response_text.startswith("```json"):
             response_text = response_text[7:]
@@ -60,7 +56,6 @@ def generate_story():
             
         story_data = json.loads(response_text)
         
-        # JSON সেভ করা
         with open(STORY_JSON_PATH, 'w', encoding='utf-8') as f:
             json.dump(story_data, f, ensure_ascii=False, indent=4)
             
@@ -69,7 +64,6 @@ def generate_story():
         
     except json.JSONDecodeError as e:
         print(f"⚠️ Gemini JSON Error: {e}. Gemini returned invalid format.")
-        print(f"Raw Output: {response_text[:100]}...")
         return False
     except Exception as e:
         print(f"⚠️ Gemini Generation Error: {e}")
