@@ -53,7 +53,7 @@ def generate_story():
         
         # 🌟 নতুন SDK এর জেনারেট কন্টেন্ট কল এবং gemini-1.5-flash ব্যবহার
         response = client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-1.5-pro',
             contents=prompt
         )
         
