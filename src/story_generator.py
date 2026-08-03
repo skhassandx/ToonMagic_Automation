@@ -43,10 +43,10 @@ def generate_story():
     """
     
     try:
-        print(f"🧠 Asking Gemini 3.6 Pro to write a {selected_theme} story...")
-        # 🌟 আপনার নির্দেশ অনুযায়ী gemini-3.6-pro ব্যবহার করা হলো
+        print(f"🧠 Asking Gemini 3.6 Flash to write a {selected_theme} story...")
+        # 🌟 আপনার নির্দেশ অনুযায়ী gemini-3.6-flash ব্যবহার করা হলো
         response = client.models.generate_content(
-            model='gemini-3.6-pro',
+            model='gemini-3.6-flash',
             contents=prompt
         )
         
