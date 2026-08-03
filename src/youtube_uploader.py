@@ -4,7 +4,7 @@ import google.auth
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-from config.settings import STORIES_DIR
+from config.settings import STORY_JSON_PATH
 
 def upload_to_youtube_headless(video_path):
     print("📡 Authenticating with YouTube...")
@@ -15,7 +15,7 @@ def upload_to_youtube_headless(video_path):
 
     if not all([client_id, client_secret, refresh_token]):
         print("❌ YouTube API credentials missing in GitHub Secrets!")
-        return
+        return False
 
     creds = Credentials(
         token=None,
@@ -28,8 +28,8 @@ def upload_to_youtube_headless(video_path):
     try:
         youtube = build('youtube', 'v3', credentials=creds)
         
-        story_path = os.path.join(STORIES_DIR, "latest_story.json")
-        with open(story_path, 'r', encoding='utf-8') as f:
+        # STORY_JSON_PATH সরাসরি ব্যবহার করা হলো
+        with open(STORY_JSON_PATH, 'r', encoding='utf-8') as f:
             story_data = json.load(f)
             
         title = story_data.get('title', 'মজার বাংলা কার্টুন গল্প')
@@ -67,11 +67,11 @@ def upload_to_youtube_headless(video_path):
                 'title': video_title,
                 'description': video_desc,
                 'tags': all_tags,
-                'categoryId': '1' # Film & Animation
+                'categoryId': '1' 
             },
             'status': {
                 'privacyStatus': 'public',
-                'madeForKids': False  # Made for kids বন্ধ করা হলো যেন কমেন্ট ও রিচ চালু থাকে
+                'madeForKids': False  
             }
         }
         
@@ -85,6 +85,8 @@ def upload_to_youtube_headless(video_path):
                 print(f"⏳ Uploading... {int(status.progress() * 100)}%")
                 
         print(f"✅ YouTube Shorts Uploaded Successfully! Link: https://youtube.com/shorts/{response['id']}")
+        return True
         
     except Exception as e:
         print(f"❌ YouTube Upload Error: {e}")
+        return False
