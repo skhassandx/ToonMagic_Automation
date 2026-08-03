@@ -1,6 +1,7 @@
 import os
 import json
 from google import genai
+from google.genai import types  # 🌟 কনফিগ ফাইল সেট করার জন্য এটি ইমপোর্ট করা হলো
 from config.settings import IMAGES_DIR
 
 def generate_images(story_path):
@@ -19,16 +20,18 @@ def generate_images(story_path):
             continue
 
         prompt = scene.get('image_prompt', "3D Pixar style cartoon")
-        enhanced_prompt = f"3D Pixar animation style, {prompt}, masterpiece, vibrant colors"
+        enhanced_prompt = f"3D Pixar animation style, {prompt}, masterpiece, highly detailed, vibrant colors"
         print(f"🎨 Generating Image for Scene {scene_num} using Gemini API...")
 
         try:
-            # 🌟 জেমিনাই এর ইমেজ জেনারেশন মডেল
+            # 🌟 নতুন নিয়মে config এর ভেতরে রেশিও এবং ইমেজের সংখ্যা দেওয়া হলো
             result = client.models.generate_images(
                 model='imagen-3.0-generate-001',
                 prompt=enhanced_prompt,
-                number_of_images=1,
-                aspect_ratio="9:16"
+                config=types.GenerateImagesConfig(
+                    number_of_images=1,
+                    aspect_ratio="9:16"
+                )
             )
             for generated_image in result.generated_images:
                 generated_image.image.save(img_path)
