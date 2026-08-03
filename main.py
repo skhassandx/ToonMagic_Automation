@@ -1,37 +1,54 @@
 import os
-from src.story_generator import generate_story_and_audio
-from src.image_generator import generate_images
-from src.video_generator import animate_scenes
-from src.video_editor import create_final_videos
-from src.youtube_uploader import upload_to_youtube_headless
+import sys
+from story_generator import generate_story
+from video_generator import generate_audio
+from image_generator import generate_images
+from video_editor import create_final_videos
+from youtube_uploader import upload_to_youtube
+from config.settings import STORY_JSON_PATH
 
 def main():
-    print("==================================================")
-    print("🚀 ToonMagic Bangla - Automated Pipeline Starting")
-    print("==================================================")
+    print("========================================")
+    print("🚀 ToonMagic Bangla - Automated Pipeline")
+    print("========================================")
 
-    # 1. Generate / Load Story & Audio
+    # 🛑 ফায়ারওয়াল ১: জেমিনাই চেক
     print("\n[Step 1] Loading Story & Audio...")
-    story_path = generate_story_and_audio()
+    story_generated = generate_story()
+    
+    # যদি জেমিনাই ফেইল করে, প্রজেক্ট এখানেই বন্ধ হয়ে যাবে!
+    if not story_generated:
+        print("\n❌ CRITICAL ERROR: Gemini failed to generate a new story!")
+        print("🛑 Pipeline Stopped: We will NOT upload a default/fake story to YouTube.")
+        sys.exit(1) # স্ক্রিপ্ট বন্ধ
 
-    # 2. Generate Images
+    # অডিও জেনারেট
+    generate_audio(STORY_JSON_PATH)
+
+    # 🛑 ফায়ারওয়াল ২: ইমেজ চেক
     print("\n[Step 2] Generating AI Images...")
-    generate_images(story_path)
+    images_status = generate_images(STORY_JSON_PATH)
+    
+    if not images_status:
+        print("\n❌ CRITICAL ERROR: Image generation failed (Leonardo/Flux Error)!")
+        print("🛑 Pipeline Stopped: We will NOT upload a video without proper images.")
+        sys.exit(1) # স্ক্রিপ্ট বন্ধ
 
-    # 3. Render Animation Scenes
-    print("\n[Step 3] Rendering Animation Scenes via Replicate...")
-    animate_scenes(story_path)
+    print("\n[Step 3 & 4] Rendering Animation Scenes & Shorts...")
+    shorts_path = create_final_videos(STORY_JSON_PATH)
 
-    # 4. Edit & Create Videos (Full + Shorts)
-    print("\n[Step 4] Editing Video & Converting to 9:16 Shorts...")
-    full_path, shorts_path = create_final_videos(story_path)
+    if not shorts_path:
+        print("\n❌ CRITICAL ERROR: Video rendering failed!")
+        sys.exit(1)
 
-    # 5. Upload Shorts to YouTube
-    if shorts_path and os.path.exists(shorts_path):
-        print("\n[Step 5] Headless YouTube Uploading...")
-        upload_to_youtube_headless(shorts_path)
+    # ফায়ারওয়াল পার হলে তবেই আপলোড
+    print("\n[Step 5] Headless YouTube Uploading...")
+    upload_status = upload_to_youtube(shorts_path, STORY_JSON_PATH)
+    
+    if upload_status:
+        print("\n🎉 Pipeline Execution Completed Successfully!")
+    else:
+        print("\n⚠️ Video created, but YouTube Upload Failed.")
 
-    print("\n🎉 Pipeline Execution Completed Successfully!")
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
