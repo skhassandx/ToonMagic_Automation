@@ -7,7 +7,7 @@ from config.settings import STORY_JSON_PATH
 def generate_story():
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        print("❌ CRITICAL ERROR: GEMINI_API_KEY not found in environment variables!")
+        print("❌ CRITICAL ERROR: GEMINI_API_KEY not found!")
         return False
 
     try:
@@ -19,10 +19,7 @@ def generate_story():
     themes = [
         "a funny adventure of a clever fox and a lazy bear",
         "an emotional story about a little boy finding a lost puppy",
-        "an educational story about a talking tree teaching the importance of water",
-        "a magical rhyming story about a flying carpet and a brave girl",
-        "a mysterious story about a glowing cave and a curious rabbit",
-        "a moral story about two friends learning the value of honesty"
+        "an educational story about a talking tree teaching the importance of water"
     ]
     selected_theme = random.choice(themes)
     
@@ -30,8 +27,7 @@ def generate_story():
     Write a short, engaging YouTube Shorts cartoon story in Bengali about {selected_theme}.
     The story must have exactly 5 scenes.
     
-    IMPORTANT: You must return ONLY a valid, parseable JSON object. 
-    Do not add any markdown formatting like ```json or ``` at the beginning or end.
+    IMPORTANT: You must return ONLY a valid, parseable JSON object without markdown.
     
     The JSON must follow this exact structure:
     {{
@@ -47,11 +43,10 @@ def generate_story():
     """
     
     try:
-        print(f"🧠 Asking Gemini 1.5 Pro to write a {selected_theme} story...")
-        
-        # 🌟 Gemini 1.5 Pro মডেলটি সেট করা হলো
+        print(f"🧠 Asking Gemini 3.6 Pro to write a {selected_theme} story...")
+        # 🌟 আপনার নির্দেশ অনুযায়ী gemini-3.6-pro ব্যবহার করা হলো
         response = client.models.generate_content(
-            model="gemini-3.6-flash",
+            model='gemini-3.6-pro',
             contents=prompt
         )
         
@@ -67,12 +62,8 @@ def generate_story():
         with open(STORY_JSON_PATH, 'w', encoding='utf-8') as f:
             json.dump(story_data, f, ensure_ascii=False, indent=4)
             
-        print(f"✅ Unique Story Generated Successfully: {story_data['title']} ({len(story_data['scenes'])} scenes)")
+        print("✅ Unique Story Generated via Gemini 3.6 Pro!")
         return True
-        
-    except json.JSONDecodeError as e:
-        print(f"⚠️ Gemini JSON Error: {e}. Gemini returned invalid format.")
-        return False
     except Exception as e:
         print(f"⚠️ Gemini Generation Error: {e}")
         return False
