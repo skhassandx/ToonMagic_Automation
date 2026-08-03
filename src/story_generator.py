@@ -1,7 +1,6 @@
 import os
 import json
 import random
-# 🌟 পুরোনো google.generativeai বাদ দিয়ে নতুন google.genai ইমপোর্ট করা হলো
 from google import genai
 from config.settings import STORY_JSON_PATH
 
@@ -11,11 +10,10 @@ def generate_story():
         print("❌ CRITICAL ERROR: GEMINI_API_KEY not found in environment variables!")
         return False
 
-    # 🌟 নতুন SDK এর ক্লায়েন্ট সেটআপ
     try:
         client = genai.Client(api_key=api_key)
     except Exception as e:
-        print(f"❌ Failed to initialize new Gemini Client: {e}")
+        print(f"❌ Failed to initialize Gemini Client: {e}")
         return False
     
     themes = [
@@ -49,9 +47,9 @@ def generate_story():
     """
     
     try:
-        print(f"🧠 Asking Gemini (New SDK) to write a {selected_theme} story...")
+        print(f"🧠 Asking Gemini 1.5 Pro to write a {selected_theme} story...")
         
-        # 🌟 নতুন SDK এর জেনারেট কন্টেন্ট কল এবং gemini-1.5-flash ব্যবহার
+        # 🌟 Gemini 1.5 Pro মডেলটি সেট করা হলো
         response = client.models.generate_content(
             model='gemini-1.5-pro',
             contents=prompt
@@ -67,4 +65,17 @@ def generate_story():
         story_data = json.loads(response_text)
         
         with open(STORY_JSON_PATH, 'w', encoding='utf-8') as f:
-            json.
+            json.dump(story_data, f, ensure_ascii=False, indent=4)
+            
+        print(f"✅ Unique Story Generated Successfully: {story_data['title']} ({len(story_data['scenes'])} scenes)")
+        return True
+        
+    except json.JSONDecodeError as e:
+        print(f"⚠️ Gemini JSON Error: {e}. Gemini returned invalid format.")
+        return False
+    except Exception as e:
+        print(f"⚠️ Gemini Generation Error: {e}")
+        return False
+
+if __name__ == "__main__":
+    generate_story()
