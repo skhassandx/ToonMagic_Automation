@@ -51,7 +51,7 @@ def generate_story():
         
         # 🌟 Gemini 1.5 Pro মডেলটি সেট করা হলো
         response = client.models.generate_content(
-            model='gemini-2.5-pro',
+            model='gemini-2.5-Flash',
             contents=prompt
         )
         
