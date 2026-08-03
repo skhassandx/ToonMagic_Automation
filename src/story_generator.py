@@ -44,7 +44,8 @@ def generate_story():
     
     try:
         print(f"🧠 Asking Gemini to write a {selected_theme} story...")
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # 🌟 মডেল পরিবর্তন করে সবচেয়ে স্টেবল gemini-pro দেওয়া হলো
+        model = genai.GenerativeModel('gemini-pro')
         response = model.generate_content(prompt)
         
         response_text = response.text.strip()
