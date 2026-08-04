@@ -22,7 +22,7 @@ def generate_images(story_path):
 
         prompt = scene.get('image_prompt', "3D Pixar style cartoon")
         # 9:16 পোর্ট্রেট স্টাইলের জন্য প্রম্পট
-        enhanced_prompt = f"3D Pixar animation style, {prompt}, masterpiece, highly detailed, vibrant colors, beautiful lighting"
+        enhanced_prompt = f"3D Pixar animation style, {prompt}, masterpiece, highly detailed, vibrant colors, beautiful lighting, FULL BODY SHOT, WIDE ANGLE, centered in frame, zoomed out, showing full environment"
         
         print(f"🎨 Generating Image for Scene {scene_num} using Free Backup API (Flux)...")
 
