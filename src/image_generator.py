@@ -1,75 +1,54 @@
 import os
 import json
-import base64
-import time  # 🌟 সার্ভারকে বিশ্রাম দেওয়ার জন্য time মডিউল যুক্ত করা হলো
-from google import genai
+import time
+import urllib.request
+import urllib.parse
+import random
 from config.settings import IMAGES_DIR
 
 def generate_images(story_path):
     with open(story_path, 'r', encoding='utf-8') as f:
         story_data = json.load(f)
 
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("❌ CRITICAL ERROR: GEMINI_API_KEY not found!")
-        return False
-
-    client = genai.Client(api_key=api_key)
     images_success = True
 
     for scene in story_data['scenes']:
         scene_num = scene['scene_number']
         img_path = os.path.join(IMAGES_DIR, f"scene_{scene_num}.jpg")
 
+        # ছবি আগে থেকেই থাকলে নতুন করে বানাবে না
         if os.path.exists(img_path):
             continue
 
         prompt = scene.get('image_prompt', "3D Pixar style cartoon")
-        enhanced_prompt = f"3D Pixar animation style, {prompt}, masterpiece, highly detailed, vibrant colors"
-        print(f"🎨 Generating Image for Scene {scene_num} using Gemini API...")
+        # 9:16 পোর্ট্রেট স্টাইলের জন্য প্রম্পট
+        enhanced_prompt = f"3D Pixar animation style, {prompt}, masterpiece, highly detailed, vibrant colors, beautiful lighting"
+        
+        print(f"🎨 Generating Image for Scene {scene_num} using Free Backup API (Flux)...")
 
-        # 🌟 গুগলের 429 Error এড়ানোর জন্য রিট্রাই লুপ
-        max_retries = 3
-        for attempt in range(max_retries):
+        image_downloaded = False
+        encoded_prompt = urllib.parse.quote(enhanced_prompt)
+        seed = random.randint(1, 1000000)
+        
+        # 1080x1920 (9:16 Shorts Ratio)
+        image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1080&height=1920&nologo=true&model=flux&seed={seed}"
+
+        # API এরর এড়াতে ৩ বার চেষ্টা করবে
+        for attempt in range(3):
             try:
-                interaction = client.interactions.create(
-                    model="gemini-3.1-flash-image",
-                    input=enhanced_prompt
-                )
-                
-                if interaction and interaction.output_text:
-                    with open(img_path, "wb") as img_file:
-                        img_file.write(base64.b64decode(interaction.output_text))
-                    print(f"✅ Scene {scene_num} generated with Gemini!")
-                    
-                    # 🌟 সফল হলে পরের ছবির আগে ৩০ সেকেন্ড বিশ্রাম নেবে
-                    if scene_num < len(story_data['scenes']):
-                        print("⏳ Waiting 30 seconds before next image to respect API Rate Limit...")
-                        time.sleep(30)
-                    break  # সফল হলে রিট্রাই লুপ থেকে বের হয়ে যাবে
-                else:
-                    print(f"❌ Failed to receive image data for Scene {scene_num}")
-                    images_success = False
-                    break
-                    
+                req = urllib.request.Request(image_url, headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req, timeout=60) as res, open(img_path, 'wb') as out_file:
+                    out_file.write(res.read())
+                print(f"✅ Scene {scene_num} image saved successfully!")
+                image_downloaded = True
+                break
             except Exception as e:
-                error_msg = str(e)
-                print(f"⚠️ API Error on attempt {attempt + 1}: {error_msg}")
-                
-                # 🌟 যদি কোটা বা রেট লিমিট (429) এরর আসে, তবে ৬০ সেকেন্ড অপেক্ষা করে আবার চেষ্টা করবে
-                if "429" in error_msg or "quota" in error_msg.lower() or "too_many_requests" in error_msg.lower():
-                    if attempt < max_retries - 1:
-                        print("⏳ Rate limit hit! Waiting 60 seconds before retrying...")
-                        time.sleep(60)
-                    else:
-                        print("❌ Maximum retries reached. Gemini API Quota exceeded.")
-                        images_success = False
-                else:
-                    print(f"❌ Gemini Image Error: {e}")
-                    images_success = False
-                    break
+                print(f"⚠️ Image generation failed on attempt {attempt+1}: {e}")
+                time.sleep(5)
 
-        if not images_success:
+        if not image_downloaded:
+            print(f"❌ CRITICAL ERROR: Failed to generate image for Scene {scene_num}")
+            images_success = False
             break
 
     return images_success
