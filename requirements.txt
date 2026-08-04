@@ -9,3 +9,5 @@ edge-tts>=6.1.9
 playwright==1.40.0
 google-generativeai
 requests
+huggingface_hub
+pillow
