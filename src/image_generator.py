@@ -14,11 +14,8 @@ def generate_images(story_path):
         print("❌ CRITICAL ERROR: GEMINI_API_KEY not found!")
         return False
 
-    # 🌟 আসল ম্যাজিক: ডিফল্ট v1beta চেঞ্জ করে v1alpha তে কানেক্ট করা হলো
-    client = genai.Client(
-        api_key=api_key, 
-        http_options={'api_version': 'v1alpha'}
-    )
+    # 🌟 কোনো হ্যাক ছাড়াই স্ট্যান্ডার্ড ক্লায়েন্ট
+    client = genai.Client(api_key=api_key)
     
     images_success = True
 
@@ -32,12 +29,12 @@ def generate_images(story_path):
         prompt = scene.get('image_prompt', "3D Pixar style cartoon")
         enhanced_prompt = f"3D Pixar animation style, {prompt}, masterpiece, highly detailed, vibrant colors, FULL BODY SHOT, WIDE ANGLE, centered in frame, zoomed out, showing full environment"
         
-        print(f"🎨 Generating Image for Scene {scene_num} using Imagen 4...")
+        print(f"🎨 Generating Image for Scene {scene_num} using Imagen 4 Fast...")
 
         try:
-            # 🌟 ড্যাশবোর্ডের মডেল নাম ব্যবহার করা হলো
+            # 🌟 আসল ম্যাজিক: মডেলের সঠিক নাম (শেষে -001 যুক্ত করা হলো)
             result = client.models.generate_images(
-                model='imagen-4.0-fast-generate',
+                model='imagen-4.0-fast-generate-001',
                 prompt=enhanced_prompt,
                 config=types.GenerateImagesConfig(
                     number_of_images=1,
@@ -49,7 +46,7 @@ def generate_images(story_path):
             for generated_image in result.generated_images:
                 generated_image.image.save(img_path)
             
-            print(f"✅ Scene {scene_num} generated with Imagen 4!")
+            print(f"✅ Scene {scene_num} generated with Imagen 4 Fast!")
             
             if scene_num < len(story_data['scenes']):
                 time.sleep(5)
