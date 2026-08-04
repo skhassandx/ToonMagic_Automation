@@ -25,15 +25,14 @@ def generate_images(story_path):
             continue
 
         prompt = scene.get('image_prompt', "3D Pixar style cartoon")
-        # 🌟 Imagen এর জন্য প্রম্পট আরও নিখুঁত করা হলো
         enhanced_prompt = f"3D Pixar animation style, {prompt}, masterpiece, highly detailed, vibrant colors, FULL BODY SHOT, WIDE ANGLE, centered in frame, zoomed out, showing full environment"
         
-        print(f"🎨 Generating Image for Scene {scene_num} using Imagen 4...")
+        print(f"🎨 Generating Image for Scene {scene_num} using Imagen 3...")
 
         try:
-            # 🌟 আপনার ড্যাশবোর্ড অনুযায়ী Imagen 4 মডেল ব্যবহার করা হলো
+            # 🌟 সঠিক মডেল নাম: imagen-3.0-generate-001
             result = client.models.generate_images(
-                model='imagen-4.0-fast-generate',
+                model='imagen-3.0-generate-001',
                 prompt=enhanced_prompt,
                 config=types.GenerateImagesConfig(
                     number_of_images=1,
@@ -45,9 +44,8 @@ def generate_images(story_path):
             for generated_image in result.generated_images:
                 generated_image.image.save(img_path)
             
-            print(f"✅ Scene {scene_num} generated with Imagen 4!")
+            print(f"✅ Scene {scene_num} generated with Imagen 3!")
             
-            # API লিমিট সুরক্ষিত রাখতে ৫ সেকেন্ড বিশ্রাম
             if scene_num < len(story_data['scenes']):
                 time.sleep(5)
                 
