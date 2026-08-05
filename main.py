@@ -1,45 +1,52 @@
 import os
-import sys
-
+import json
+from config.settings import STORY_DIR
 from src.story_generator import generate_story
+from src.audio_generator import generate_audio
 from src.image_generator import generate_images
-from src.audio_generator import generate_audio  # 🌟 অডিও ইমপোর্ট করা হলো
-from src.video_generator import animate_scenes
-from src.video_editor import create_final_videos
-from src.youtube_uploader import upload_to_youtube_headless
-from config.settings import STORY_JSON_PATH
+from src.video_editor import create_video
+from src.youtube_uploader import upload_to_youtube
 
 def main():
-    print("========================================")
+    print("==========================================")
     print("🚀 ToonMagic Bangla - Automated Pipeline")
-    print("========================================")
+    print("==========================================")
 
-    print("\n[Step 1] Loading Story...")
+    # Step 1: Story Generation
     if not generate_story():
-        sys.exit(1)
+        print("❌ Pipeline failed at Story Generation step.")
+        return
 
-    print("\n[Step 2] Generating Audio Voiceover...")
-    generate_audio(STORY_JSON_PATH)  # 🌟 অডিও জেনারেট হচ্ছে
+    story_path = os.path.join(STORY_DIR, 'story.json')
 
-    print("\n[Step 3] Generating AI Images...")
-    if not generate_images(STORY_JSON_PATH):
-        sys.exit(1)
+    # Step 2: Audio Generation
+    if not generate_audio(story_path):
+        print("❌ Pipeline failed at Audio Generation step.")
+        return
 
-    print("\n[Step 4] Rendering Animation Scenes locally...")
-    animate_scenes(STORY_JSON_PATH)
+    # Step 3: Image Generation
+    if not generate_images(story_path):
+        print("❌ Pipeline failed at Image Generation step.")
+        return
 
-    print("\n[Step 5] Editing Video & Converting to 9:16 Shorts...")
-    shorts_path, _ = create_final_videos(STORY_JSON_PATH)
-    if not shorts_path:
-        sys.exit(1)
+    # Step 4: Video Editing
+    video_path = create_video(story_path)
+    if not video_path:
+        print("❌ Pipeline failed at Video Editing step.")
+        return
 
-    print("\n[Step 6] Headless YouTube Uploading...")
-    upload_status = upload_to_youtube_headless(shorts_path)
-    
-    if upload_status:
-        print("\n🎉 Pipeline Execution Completed Successfully!")
-    else:
-        print("\n⚠️ YouTube Upload Failed.")
+    # Step 5: YouTube Upload
+    with open(story_path, 'r', encoding='utf-8') as f:
+        story_data = json.load(f)
+
+    title = story_data.get('title', 'মজার বাংলা কার্টুন গল্প')
+    description = f"গল্পের ক্যাটাগরি: {story_data.get('genre', 'কার্টুন')}"
+
+    try:
+        upload_to_youtube(video_path, title, description)
+        print("🎉 PIPELINE COMPLETED SUCCESSFULLY!")
+    except Exception as e:
+        print(f"⚠️ Video rendered but upload failed: {e}")
 
 if __name__ == "__main__":
     main()
