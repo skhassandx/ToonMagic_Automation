@@ -1,52 +1,63 @@
 import os
 import json
 import time
-import random
-import urllib.parse
-import requests
 from io import BytesIO
 from PIL import Image, ImageFilter
+from google import genai
+from google.genai import types
 from config.settings import IMAGES_DIR
 
 def generate_images(story_path):
-    print("🎨 Generating Images using Unlimited Free API (No Keys Required)...")
+    print("🎨 Generating Images using Google Gemini (Nano Banana Models)...")
     
     with open(story_path, 'r', encoding='utf-8') as f:
         story_data = json.load(f)
 
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        print("❌ CRITICAL ERROR: GEMINI_API_KEY not found!")
+        return False
+
+    client = genai.Client(api_key=api_key)
     images_success = True
+
+    # 🌟 গুগলের লেটেস্ট ইমেজ জেনারেশন মডেল
+    image_models_to_try = ['gemini-3.1-flash-image', 'gemini-3.1-flash-lite-image']
 
     for scene in story_data['scenes']:
         scene_num = scene['scene_number']
         img_path = os.path.join(IMAGES_DIR, f"scene_{scene_num}.jpg")
 
-        # আগে থেকে ছবি থাকলে স্কিপ করবে (যাতে সময় বাঁচে)
+        # স্কিপ লজিক (আগের ছবি থাকলে নতুন করে বানাবে না)
         if os.path.exists(img_path):
             print(f"⏭️ Scene {scene_num} already exists. Skipping...")
             continue
 
         raw_prompt = scene.get('image_prompt', "A cute cartoon character")
         enhanced_prompt = f"3D Pixar style, masterpiece, highly detailed, vibrant colors, {raw_prompt}, wide angle shot, full body"
-        encoded_prompt = urllib.parse.quote(enhanced_prompt)
         
         image_downloaded = False
         
-        # 🌟 ম্যাজিক ট্রিক: ৩টি আলাদা মডেল দিয়ে অটো-রিট্রাই
-        models = ['flux', 'turbo', 'default']
-        
         for attempt in range(3):
-            for model in models:
+            for model_name in image_models_to_try:
                 try:
-                    seed = random.randint(1, 1000000)
-                    url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=1024&nologo=true&model={model}&seed={seed}"
+                    print(f"🔄 Trying model: {model_name} for Scene {scene_num}...")
                     
-                    print(f"🔄 Trying Pollinations ({model}) for Scene {scene_num}...")
+                    response = client.models.generate_images(
+                        model=model_name,
+                        prompt=enhanced_prompt,
+                        config=types.GenerateImagesConfig(
+                            number_of_images=1,
+                            output_mime_type="image/jpeg",
+                            aspect_ratio="1:1" # স্কয়ার ইমেজ
+                        )
+                    )
                     
-                    # 🌟 requests ব্যবহার করে কানেকশন স্ট্রং করা হলো
-                    response = requests.get(url, timeout=60)
-                    
-                    if response.status_code == 200:
-                        original_img = Image.open(BytesIO(response.content)).convert("RGB")
+                    # 🌟 ছবি সেভ করা এবং ব্লার প্যাডিং
+                    if response.generated_images:
+                        image_bytes = response.generated_images[0].image.image_bytes
+                        original_img = Image.open(BytesIO(image_bytes)).convert("RGB")
+                        
                         target_width, target_height = 1080, 1920
                         
                         fg_img = original_img.resize((1080, 1080))
@@ -60,18 +71,19 @@ def generate_images(story_path):
                         
                         print(f"✅ Scene {scene_num} image saved successfully!")
                         image_downloaded = True
-                        break
+                        break 
                     else:
-                        print(f"⚠️ Server returned HTTP {response.status_code}. Switching model...")
+                        print("⚠️ No image returned. Switching model...")
                         
                 except Exception as e:
                     print(f"⚠️ Request failed: {e}. Switching model...")
+                    time.sleep(3)
                     
             if image_downloaded:
                 break
             else:
-                print("⏳ All servers busy. Waiting 5s before retrying...")
-                time.sleep(5)
+                print("⏳ Quota limit reached or models busy. Waiting 15s before retry...")
+                time.sleep(15)
 
         if not image_downloaded:
             print(f"❌ CRITICAL ERROR: Failed to generate image for Scene {scene_num}")
