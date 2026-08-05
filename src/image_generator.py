@@ -7,7 +7,7 @@ from huggingface_hub import InferenceClient
 from config.settings import IMAGES_DIR
 
 def generate_images(story_path):
-    print("🎨 Generating Images using Hugging Face (Ungated Open Models)...")
+    print("🎨 Generating Images using Hugging Face (Native Unlimited Free Models)...")
     
     with open(story_path, 'r', encoding='utf-8') as f:
         story_data = json.load(f)
@@ -20,11 +20,10 @@ def generate_images(story_path):
     client = InferenceClient(token=api_key)
     images_success = True
 
-    # 🌟 ১০০% ওপেন এবং ফ্রি মডেলের তালিকা (কোনো Gated বা লাইসেন্স এগ্রিমেন্টের ঝামেলা নেই)
+    # 🌟 ১০০% ফ্রি এবং আনলিমিটেড মডেলের তালিকা (এগুলোতে কোনো ক্রেডিট কাটে না)
     open_models = [
-        "prompthero/openjourney",             # কার্টুন ও আর্টের জন্য সেরা
-        "cagliostrolab/animagine-xl-3.1",     # হাই-কোয়ালিটি অ্যানিমেশন
-        "black-forest-labs/FLUX.1-schnell"    # লেটেস্ট ফাস্ট জেনারেশন মডেল
+        "runwayml/stable-diffusion-v1-5",  # সবচেয়ে স্ট্যাবল এবং আনলিমিটেড ফ্রি মডেল
+        "CompVis/stable-diffusion-v1-4"    # চমৎকার ব্যাকআপ মডেল
     ]
 
     for scene in story_data['scenes']:
@@ -32,7 +31,8 @@ def generate_images(story_path):
         img_path = os.path.join(IMAGES_DIR, f"scene_{scene_num}.jpg")
 
         if os.path.exists(img_path):
-            continue
+            print(f"⏭️ Scene {scene_num} already exists. Skipping...")
+            continue # 🌟 এই লাইনটির কারণে সে প্রথম ৯টি ছবি আর নতুন করে বানাবে না, সরাসরি ১০ নম্বর থেকে শুরু করবে!
 
         prompt = scene.get('image_prompt', "A cute cartoon character")
         enhanced_prompt = f"3D Pixar style, masterpiece, highly detailed, vibrant colors, {prompt}, wide angle shot, full body"
@@ -42,7 +42,7 @@ def generate_images(story_path):
         for attempt in range(3):
             for model_name in open_models:
                 try:
-                    print(f"🔄 Trying open model: {model_name} for Scene {scene_num}...")
+                    print(f"🔄 Trying model: {model_name} for Scene {scene_num}...")
                     
                     image = client.text_to_image(
                         enhanced_prompt,
@@ -64,15 +64,15 @@ def generate_images(story_path):
                     
                     print(f"✅ Scene {scene_num} image saved successfully!")
                     image_downloaded = True
-                    break # সফল হলে মডেল লুপ ভাঙবে
+                    break 
                     
                 except Exception as e:
                     print(f"⚠️ {model_name} failed: {e}")
-                    print("⏳ Trying next open model...")
+                    print("⏳ Trying next model...")
                     time.sleep(3)
                     
             if image_downloaded:
-                break # সফল হলে attempt লুপ ভাঙবে
+                break
             else:
                 print("⏳ All models failed for this attempt. Waiting 10s before retry...")
                 time.sleep(10)
