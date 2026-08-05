@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+          cache: 'pip' # 🌟 ম্যাজিক ট্রিক: প্যাকেজগুলো মেমোরিতে সেভ করে রাখবে, রোজ রোজ ডাউনলোড করবে না!
 
       - name: Install System Dependencies (FFmpeg)
         run: |
