@@ -67,7 +67,7 @@ def generate_story():
     """
 
     # 🌟 সেরা কোয়ালিটি (Pro) থেকে শুরু করে স্ট্যাবল স্পিড (Flash) পর্যন্ত ফলব্যাক লজিক
-    models_to_try = ['gemini-3.1-pro-preview', 'gemini-3.5-flash', 'gemini-3.6-flash']
+    models_to_try = ['gemini-3.1-pro-preview', 'gemini-3.6-flash', 'gemini-3.5-flash']
 
     for attempt in range(3): 
         for model_name in models_to_try:
