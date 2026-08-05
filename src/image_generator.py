@@ -27,7 +27,9 @@ def generate_images(story_path):
 
         encoded_prompt = urllib.parse.quote(enhanced_prompt)
         seed = random.randint(1, 1000000)
-        image_url = f"[https://image.pollinations.ai/prompt/](https://image.pollinations.ai/prompt/){encoded_prompt}?width=1024&height=1024&nologo=true&model=flux&seed={seed}"
+        
+        # 🌟 ঠিক এই লাইনেই ব্র্যাকেটটি ছিল, এখন একদম ঠিক করে দেওয়া হয়েছে
+        image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=1024&nologo=true&model=flux&seed={seed}"
 
         image_downloaded = False
         for attempt in range(3):
@@ -36,7 +38,6 @@ def generate_images(story_path):
                 with urllib.request.urlopen(req, timeout=60) as res:
                     img_data = res.read()
                     
-                    # 🌟 সিনেমাটিক ব্লার প্যাডিং প্রসেসিং
                     original_img = Image.open(BytesIO(img_data)).convert("RGB")
                     target_width, target_height = 1080, 1920
                     
