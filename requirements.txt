@@ -6,3 +6,4 @@ gTTS
 moviepy==1.0.3
 Pillow
 requests
+huggingface_hub
