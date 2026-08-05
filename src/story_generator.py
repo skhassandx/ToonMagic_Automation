@@ -67,7 +67,11 @@ def generate_story():
     """
 
     # 🌟 ম্যাজিক ট্রিক: ৩টি ভিন্ন মডেলের তালিকা (একটাতে 503 দিলে অন্যটা ধরবে)
-    models_to_try = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.1-flash-lite']
+    models_to_try = [
+        'gemini-3.1-pro-preview', # প্রথম চয়েস: সবচেয়ে সুন্দর, ক্রিয়েটিভ ও ইমোশনাল গল্পের জন্য
+        'gemini-3.6-flash',       # দ্বিতীয় চয়েস: প্রো মডেল বিজি থাকলে সেরা ইন্টেলিজেন্ট স্ট্যাবল মডেল
+        'gemini-3.5-flash'        # তৃতীয় চয়েস: লেটেস্ট ফাস্ট মডেল (ব্যাকআপ হিসেবে)
+    ]
 
     for attempt in range(3): # মোট ৩ বার পুরো প্রসেসটা ট্রাই করবে
         for model_name in models_to_try:
