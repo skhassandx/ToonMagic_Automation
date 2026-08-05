@@ -1,21 +1,19 @@
-name: ToonMagic Auto Cartoon Generator & Uploader
+name: run-pipeline
 
 on:
   schedule:
-    # Runs automatically every day at 10:00 AM UTC (4:00 PM BST)
-    - cron: '0 10 * * *'
-  workflow_dispatch: # Allows manual one-click trigger from GitHub UI
+    - cron: '0 0 * * *' # প্রতিদিন বাংলাদেশ সময় সকাল ৬টায় অটো রান হবে
+  workflow_dispatch: # ম্যানুয়ালি চালানোর জন্য
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Set up Python 3.11update
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
@@ -26,15 +24,13 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run ToonMagic Automation Script
+        run: python main.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          HF_API_KEY: ${{ secrets.HF_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: |
-          python main.py
