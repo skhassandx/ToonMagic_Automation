@@ -1,19 +1,19 @@
 import os
 
-# Base directory
+# প্রজেক্টের মেইন ডিরেক্টরি
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BACKUP_DIR = os.path.join(BASE_DIR, "backup")
 
-# Sub-directories
-STORIES_DIR = os.path.join(BACKUP_DIR, "stories")
-IMAGES_DIR = os.path.join(BACKUP_DIR, "images")
-AUDIO_DIR = os.path.join(BACKUP_DIR, "audio")
-ANIMATED_DIR = os.path.join(BACKUP_DIR, "animated_scenes")
-FINAL_VIDEOS_DIR = os.path.join(BACKUP_DIR, "final_videos")
+# ডেটা এবং স্টোরি ফোল্ডার
+DATA_DIR = os.path.join(BASE_DIR, 'data')
+STORY_DIR = os.path.join(DATA_DIR, 'story')  # 🌟 এই লাইনটিই মিসিং ছিল
 
-# Create directories if they don't exist
-for d in [STORIES_DIR, IMAGES_DIR, AUDIO_DIR, ANIMATED_DIR, FINAL_VIDEOS_DIR]:
-    os.makedirs(d, exist_ok=True)
+# আউটপুট ফোল্ডার (অডিও, ইমেজ, ভিডিও)
+OUTPUT_DIR = os.path.join(BASE_DIR, 'output')
+AUDIO_DIR = os.path.join(OUTPUT_DIR, 'audio')
+IMAGES_DIR = os.path.join(OUTPUT_DIR, 'images')
 
-# 🌟 এই নতুন লাইনটি যোগ করা হলো
-STORY_JSON_PATH = os.path.join(STORIES_DIR, "story.json")
+# ফোল্ডারগুলো আগে থেকে না থাকলে স্বয়ংক্রিয়ভাবে তৈরি করে নেবে
+os.makedirs(STORY_DIR, exist_ok=True)
+os.makedirs(AUDIO_DIR, exist_ok=True)
+os.makedirs(IMAGES_DIR, exist_ok=True)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
