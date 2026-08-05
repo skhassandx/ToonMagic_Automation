@@ -2,74 +2,58 @@ import os
 import datetime
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from google.oauth2.credentials import Credentials
 
-def upload_video_to_youtube(youtube, video_path, title, description, playlist_id=None):
-    print("🚀 Uploading video to YouTube with Pro SEO Settings...")
+def get_youtube_service():
+    client_id = os.environ.get("YOUTUBE_CLIENT_ID")
+    client_secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
+    refresh_token = os.environ.get("YOUTUBE_REFRESH_TOKEN")
 
-    # ১. আজকের রেকর্ডিং ডেট স্বয়ংক্রিয়ভাবে জেনারেট করা
+    creds = Credentials(
+        None,
+        refresh_token=refresh_token,
+        token_uri="[https://oauth2.googleapis.com/token](https://oauth2.googleapis.com/token)",
+        client_id=client_id,
+        client_secret=client_secret
+    )
+    return build("youtube", "v3", credentials=creds)
+
+def upload_to_youtube(video_path, title, description):
+    print("🚀 Uploading to YouTube with Full SEO Optimization...")
+    youtube = get_youtube_service()
+
     today_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
-    # ২. প্রো-লেভেল ইউনিক ট্যাগ (প্রায় ৫০০ ক্যারেক্টার)
     viral_tags = [
         "bangla cartoon", "bangla golpo", "bengali fairy tales", "cartoon bangla",
         "kids cartoon", "rupkothar golpo", "shorts feed", "trending shorts",
         "bangla moral stories", "tunir golpo", "bengali stories", "bangla animation",
         "shialer golpo", "bhooter golpo", "bangla cartoon 2026", "bangla short film",
-        "chotoder golpo", "bengali cartoon", "bangla mojar golpo", "fairy tales in bengali",
-        "thakurmar jhuli", "bangla shorts cartoon", "notun bangla golpo", "animal cartoon bangla"
+        "chotoder golpo", "bengali cartoon", "bangla mojar golpo", "fairy tales in bengali"
     ]
 
-    # ৩. ভিডিওর মেটাডেটা এবং এসইও (SEO) সেটিংস
-    request_body = {
+    body = {
         'snippet': {
-            'title': title,
-            'description': description,
+            'title': f"{title} ✨ | Bangla Cartoon | #Shorts",
+            'description': f"{description}\n\n#BanglaCartoon #MoralStories #Shorts",
             'tags': viral_tags,
-            'categoryId': '1',  # 1 = Film & Animation
-            'defaultLanguage': 'bn',       # ভিডিওর টাইটেল ও ডেসক্রিপশন ভাষা (Bangla)
-            'defaultAudioLanguage': 'bn'   # অরিজিনাল অডিও ভাষা (Bangla)
+            'categoryId': '1',
+            'defaultLanguage': 'bn',
+            'defaultAudioLanguage': 'bn'
         },
         'status': {
-            'privacyStatus': 'public',  
-            'madeForKids': True,        # কার্টুন যেহেতু, তাই Kids ফ্রেন্ডলি রাখা ভালো
+            'privacyStatus': 'public',
+            'madeForKids': True,
             'selfDeclaredMadeForKids': True
         },
         'recordingDetails': {
-            'recordingDate': today_iso  # আজকের রেকর্ডিং ডেট
+            'recordingDate': today_iso
         }
     }
 
-    # ৪. ভিডিও আপলোড রিকোয়েস্ট
     media = MediaFileUpload(video_path, chunksize=-1, resumable=True, mimetype='video/mp4')
-    request = youtube.videos().insert(
-        part="snippet,status,recordingDetails",
-        body=request_body,
-        media_body=media
-    )
-
+    request = youtube.videos().insert(part="snippet,status,recordingDetails", body=body, media_body=media)
     response = request.execute()
-    video_id = response.get("id")
-    print(f"✅ Video Uploaded Successfully! Video ID: {video_id}")
 
-    # ৫. প্লেলিস্টে অ্যাড করা (যদি Playlist ID দেওয়া থাকে)
-    if playlist_id and video_id:
-        try:
-            print(f"📂 Adding video to Playlist ID: {playlist_id}...")
-            playlist_body = {
-                'snippet': {
-                    'playlistId': playlist_id,
-                    'resourceId': {
-                        'kind': 'youtube#video',
-                        'videoId': video_id
-                    }
-                }
-            }
-            youtube.playlistItems().insert(
-                part="snippet",
-                body=playlist_body
-            ).execute()
-            print("✅ Video added to the playlist successfully!")
-        except Exception as e:
-            print(f"⚠️ Failed to add video to playlist: {e}")
-
-    return video_id
+    print(f"✅ Video Uploaded! Video ID: {response.get('id')}")
+    return response.get('id')
