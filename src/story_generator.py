@@ -7,7 +7,7 @@ from google.genai import types
 from config.settings import STORY_DIR
 
 def generate_story():
-    print("🧠 Generating Dynamic & Unique Story using Gemini (With Fallback)...")
+    print("🧠 Generating Dynamic, Emotional & Unique Story using Gemini (With Fallback)...")
     
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -48,8 +48,8 @@ def generate_story():
     নির্দেশনা:
     ১. গল্পটি এমনভাবে লিখবে যেন ভয়েসওভার পড়লে মোট সময় ঠিক {target_duration} সেকেন্ডের কাছাকাছি হয়।
     ২. ভিডিওটি ফাস্ট-পেসড (Fast-paced) অ্যানিমেশন শর্টস হবে, তাই মোট {scene_count} টি ছোট ছোট সিন (Scene) তৈরি করবে।
-    ৩. প্রতিটি সিনের 'narration' হবে একদম ছোট (১টি ছোট বাক্য, ৩-৫ শব্দ), যাতে সিন খুব দ্রুত পরিবর্তন হয়।
-    ৪. image_prompt-এ "3D Pixar style, highly detailed, colorful, wide landscape, full body character visible" ফরম্যাট ব্যবহার করবে।
+    ৩. 🌟 আবেগ ও ভয়েসওভার টোন: প্রতিটি সিনের 'narration'-এ আবেগপূর্ণ শব্দ বা বিস্ময়সূচক অব্যয় (যেমন: ওমা!, হায় হায়!, হাহাহা!, ওরে বাবা!, ইশ!) ব্যবহার করবে, যাতে রোবটিক ভয়েসওভারটিও মানুষের মতো জীবন্ত ও এক্সপ্রেসিভ শোনায়। গল্পের ধরন অনুযায়ী টোন (খুশি, দুঃখ, ভয়, চমক) ফুটিয়ে তুলবে।
+    ৪. 🌟 ছবির এক্সপ্রেশন: প্রতিটি 'image_prompt'-এ ক্যারেক্টারের চেহারার স্পষ্ট এক্সপ্রেশন (যেমন: crying bitterly, laughing out loud, looking extremely surprised, angry face) অবশ্যই উল্লেখ করবে। সাথে "3D Pixar style, highly detailed, colorful, wide landscape, full body character visible" ফরম্যাট ব্যবহার করবে।
     ৫. আউটপুট অবশ্যই শুদ্ধ JSON ফরম্যাটে দেবে।
 
     JSON Format:
@@ -59,21 +59,17 @@ def generate_story():
         "scenes": [
             {{
                 "scene_number": 1,
-                "narration": "বাংলা ছোট বাক্য...",
-                "image_prompt": "3D Pixar style, cute boy walking in a forest, wide angle, full body visible..."
+                "narration": "ওমা! দেখো দেখো কী সুন্দর পাখি...",
+                "image_prompt": "3D Pixar style, cute boy looking very surprised and happy pointing at a bird, wide angle, full body visible..."
             }}
         ]
     }}
     """
 
-    # 🌟 ম্যাজিক ট্রিক: ৩টি ভিন্ন মডেলের তালিকা (একটাতে 503 দিলে অন্যটা ধরবে)
-    models_to_try = [
-        'gemini-3.1-pro-preview', # প্রথম চয়েস: সবচেয়ে সুন্দর, ক্রিয়েটিভ ও ইমোশনাল গল্পের জন্য
-        'gemini-3.6-flash',       # দ্বিতীয় চয়েস: প্রো মডেল বিজি থাকলে সেরা ইন্টেলিজেন্ট স্ট্যাবল মডেল
-        'gemini-3.5-flash'        # তৃতীয় চয়েস: লেটেস্ট ফাস্ট মডেল (ব্যাকআপ হিসেবে)
-    ]
+    # 🌟 সেরা কোয়ালিটি (Pro) থেকে শুরু করে স্ট্যাবল স্পিড (Flash) পর্যন্ত ফলব্যাক লজিক
+    models_to_try = ['gemini-3.1-pro-preview', 'gemini-3.5-flash', 'gemini-3.6-flash']
 
-    for attempt in range(3): # মোট ৩ বার পুরো প্রসেসটা ট্রাই করবে
+    for attempt in range(3): 
         for model_name in models_to_try:
             try:
                 print(f"🔄 Attempting with model: {model_name} (Attempt {attempt+1})...")
@@ -104,7 +100,7 @@ def generate_story():
             except Exception as e:
                 print(f"⚠️ {model_name} failed: {e}")
                 print("⏳ Waiting 5 seconds before trying the next model...")
-                time.sleep(5) # 503 এরর সামলাতে ৫ সেকেন্ড রেস্ট
+                time.sleep(5) 
 
     print("❌ Failed to generate story after all retries and model fallbacks.")
     return False
