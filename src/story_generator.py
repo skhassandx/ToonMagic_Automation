@@ -1,12 +1,13 @@
 import os
 import json
 import random
+import time
 from google import genai
 from google.genai import types
 from config.settings import STORY_DIR
 
 def generate_story():
-    print("🧠 Generating Dynamic & Unique Story using Gemini...")
+    print("🧠 Generating Dynamic & Unique Story using Gemini (Latest Model)...")
     
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -15,7 +16,7 @@ def generate_story():
 
     client = genai.Client(api_key=api_key)
 
-    # 🌟 ১. মাল্টিপল গল্পের ধরন (এখানে আরও যোগ করতে পারবেন)
+    # 🌟 ৩০টি সম্পূর্ণ ভিন্ন ক্যাটাগরি
     genres = [
         "খুব হাসির এবং মজার কার্টুন গল্প",
         "অত্যন্ত ইমোশনাল এবং দুঃখের গল্প (Sad Story)",
@@ -25,17 +26,33 @@ def generate_story():
         "ইসলামিক শিক্ষামূলক গল্প (Islamic Education)",
         "হাদিস থেকে নেওয়া ছোট্ট শিক্ষামূলক ঘটনা (Hadith Story)",
         "রূপকথার জাদুকরী গল্প (Fairy Tale)",
-        "ভুতের বা রহস্যময় মজার গল্প (Funny Ghost Story)"
+        "ভুতের বা রহস্যময় মজার গল্প (Funny Ghost Story)",
+        "সাইন্স ফিকশন বা মহাকাশ ভ্রমণের গল্প (Sci-Fi/Space)",
+        "চালাক শিয়াল ও বোকা কুমিরের গল্প (Folk Tale)",
+        "সুপারহিরো বাচ্চাদের সাহসিকতার গল্প (Superhero)",
+        "জাদুকরী গাছ ও প্রাণীদের কথা বলার গল্প (Talking Animals)",
+        "গ্রামের সাধারণ জীবন ও মা-বাবার ভালোবাসার গল্প (Village Life)",
+        "লোভের পরিণতি নিয়ে শিক্ষামূলক গল্প (Consequences of Greed)",
+        "সততা ও পুরস্কারের গল্প (Honesty & Reward)",
+        "স্বাস্থ্য, পরিচ্ছন্নতা ও ভালো অভ্যাসের গল্প (Good Habits)",
+        "টাইম ট্রাভেল বা সময় ভ্রমণের মজার গল্প (Time Travel)",
+        "সমুদ্রের নিচের জগৎ ও জলপরীদের গল্প (Mermaids/Underwater)",
+        "বুদ্ধিমান কাক বা পাখির বুদ্ধিদীপ্ত গল্প (Clever Birds)",
+        "রাজা, রানী ও রাজকন্যার অ্যাডভেঞ্চার গল্প (Royal Adventure)",
+        "নবী-রাসূলদের জীবনের শিক্ষামূলক ছোট ঘটনা (Prophets' Stories)",
+        "অহংকার পতনের মূল- এই বিষয়ের উপর গল্প (Pride/Arrogance)",
+        "পরিবেশ বাঁচানো ও গাছ লাগানোর সচেতনতামূলক গল্প (Environment)",
+        "জাদুর পেন্সিল বা জাদুর প্রদীপের মজার ঘটনা (Magic Item)",
+        "স্কুল জীবনের মজার স্মৃতি ও শিক্ষণীয় ঘটনা (School Life)",
+        "অলসতার পরিণতি নিয়ে মজার গল্প (Laziness)",
+        "দানশীলতা ও অপরকে সাহায্য করার গল্প (Charity/Helping)",
+        "কৃষক ও তার পোষা প্রাণীর বন্ধুত্বের গল্প (Farmer & Pets)",
+        "ভবিষ্যতের আধুনিক দুনিয়া নিয়ে মজার গল্প (Future World)"
     ]
     
-    # স্বয়ংক্রিয়ভাবে একটি ধরন বেছে নেওয়া
     selected_genre = random.choice(genres)
-    
-    # 🌟 ২. সিনের সংখ্যা ডাইনামিক করা (৭ থেকে ১২টি সিন)
-    scene_count = random.randint(7, 12) 
-    
-    # 🌟 ৩. ভিডিওর সময়সীমা ডাইনামিক করা (৪০ থেকে ৫৮ সেকেন্ড)
-    target_duration = random.randint(40, 58)
+    scene_count = random.randint(12, 18) # ১২ থেকে ১৮টি সিন (অ্যানিমেশন ফিল)
+    target_duration = random.randint(40, 58) # ৪০ থেকে ৫৮ সেকেন্ড
 
     prompt = f"""
     তুমি একজন প্রফেশনাল ইউটিউব শর্টস স্ক্রিপ্ট রাইটার। তোমাকে সম্পূর্ণ নতুন, ইউনিক এবং আকর্ষনীয় একটি বাংলা গল্প লিখতে হবে।
@@ -45,60 +62,55 @@ def generate_story():
 
     নির্দেশনা:
     ১. গল্পটি এমনভাবে লিখবে যেন ভয়েসওভার পড়লে মোট সময় ঠিক {target_duration} সেকেন্ডের কাছাকাছি হয়।
-    ২. ভিডিওটি ফাস্ট-পেসড (Fast-paced) শর্টস হবে, তাই মোট {scene_count} টি ছোট ছোট সিন (Scene) তৈরি করবে।
-    ৩. প্রতিটি সিনের 'narration' হবে একদম ছোট (১টি ছোট বাক্য), যাতে সিনগুলো খুব দ্রুত পরিবর্তন হয় এবং দর্শক বোর না হয়।
-    ৪. image_prompt-এ "3D Pixar animation style, highly detailed, full body, wide angle" কথাগুলো যুক্ত করে দিবে এবং ওই সিনের সাথে মিল রেখে ক্যারেক্টার ও ব্যাকগ্রাউন্ডের বর্ণনা দেবে।
-    ৫. আউটপুট অবশ্যই নিচের JSON ফরম্যাটে দেবে, এর বাইরে কোনো টেক্সট বা মার্কডাউন (যেমন ```json) লিখবে না।
+    ২. ভিডিওটি ফাস্ট-পেসড (Fast-paced) অ্যানিমেশন শর্টস হবে, তাই মোট {scene_count} টি ছোট ছোট সিন (Scene) তৈরি করবে।
+    ৩. প্রতিটি সিনের 'narration' হবে একদম ছোট (১টি ছোট বাক্য, ৩-৫ শব্দ), যাতে সিন খুব দ্রুত পরিবর্তন হয়।
+    ৪. image_prompt-এ "3D Pixar style, highly detailed, colorful, wide landscape, full body character visible" ফরম্যাট ব্যবহার করবে।
+    ৫. আউটপুট অবশ্যই শুদ্ধ JSON ফরম্যাটে দেবে।
 
     JSON Format:
     {{
-        "title": "গল্পের একটি আকর্ষণীয় এবং এসইও অপটিমাইজড বাংলা টাইটেল",
+        "title": "গল্পের একটি আকর্ষণীয় বাংলা টাইটেল",
         "genre": "{selected_genre}",
         "scenes": [
             {{
                 "scene_number": 1,
-                "narration": "বাংলায় ছোট্ট ভয়েসওভার...",
-                "image_prompt": "3D Pixar style, cute boy walking in a village, wide angle, highly detailed..."
-            }},
-            ... (এভাবে ঠিক {scene_count} টি সিন)
+                "narration": "বাংলা ছোট বাক্য...",
+                "image_prompt": "3D Pixar style, cute boy walking in a forest, wide angle, full body visible..."
+            }}
         ]
     }}
     """
 
     for attempt in range(3):
         try:
-            # 🌟 Temperature 0.9 দেওয়া হলো যাতে প্রতিদিন একদম ১০০% নতুন আইডিয়া জেনারেট হয়
+            # 🌟 Gemini এর লেটেস্ট ও ফাস্ট মডেল ব্যবহার করা হলো
             response = client.models.generate_content(
-                model='gemini-3.5-flash', 
+                model='gemini-3.5-flash',
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    temperature=0.9 
+                    temperature=0.95
                 )
             )
 
-            story_text = response.text
-            
-            # JSON ক্লিনিং
+            story_text = response.text.strip()
             if story_text.startswith("```json"):
                 story_text = story_text.replace("```json", "").replace("```", "").strip()
             elif story_text.startswith("```"):
                 story_text = story_text.replace("```", "").strip()
-                
+
             story_data = json.loads(story_text)
 
-            os.makedirs(STORY_DIR, exist_ok=True)
             story_path = os.path.join(STORY_DIR, 'story.json')
-            
             with open(story_path, 'w', encoding='utf-8') as f:
                 json.dump(story_data, f, ensure_ascii=False, indent=4)
 
-            print(f"✅ Unique Story Generated! Genre: {selected_genre} | Scenes: {scene_count} | Target Time: {target_duration}s")
+            print(f"✅ Unique Story Generated! Genre: {selected_genre} | Scenes: {scene_count}")
             return True
 
         except Exception as e:
-            print(f"⚠️ Attempt {attempt+1} Failed: {e}")
-            time.sleep(5)
+            print(f"⚠️ Story attempt {attempt+1} failed: {e}")
+            time.sleep(3)
 
-    print("❌ Failed to generate story after 3 attempts.")
+    print("❌ Failed to generate story.")
     return False
