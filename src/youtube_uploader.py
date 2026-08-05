@@ -1,92 +1,75 @@
 import os
-import json
-import google.auth
-from google.oauth2.credentials import Credentials
+import datetime
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-from config.settings import STORY_JSON_PATH
 
-def upload_to_youtube_headless(video_path):
-    print("📡 Authenticating with YouTube...")
-    
-    client_id = os.environ.get('YOUTUBE_CLIENT_ID')
-    client_secret = os.environ.get('YOUTUBE_CLIENT_SECRET')
-    refresh_token = os.environ.get('YOUTUBE_REFRESH_TOKEN')
+def upload_video_to_youtube(youtube, video_path, title, description, playlist_id=None):
+    print("🚀 Uploading video to YouTube with Pro SEO Settings...")
 
-    if not all([client_id, client_secret, refresh_token]):
-        print("❌ YouTube API credentials missing in GitHub Secrets!")
-        return False
+    # ১. আজকের রেকর্ডিং ডেট স্বয়ংক্রিয়ভাবে জেনারেট করা
+    today_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
-    creds = Credentials(
-        token=None,
-        refresh_token=refresh_token,
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=client_id,
-        client_secret=client_secret
+    # ২. প্রো-লেভেল ইউনিক ট্যাগ (প্রায় ৫০০ ক্যারেক্টার)
+    viral_tags = [
+        "bangla cartoon", "bangla golpo", "bengali fairy tales", "cartoon bangla",
+        "kids cartoon", "rupkothar golpo", "shorts feed", "trending shorts",
+        "bangla moral stories", "tunir golpo", "bengali stories", "bangla animation",
+        "shialer golpo", "bhooter golpo", "bangla cartoon 2026", "bangla short film",
+        "chotoder golpo", "bengali cartoon", "bangla mojar golpo", "fairy tales in bengali",
+        "thakurmar jhuli", "bangla shorts cartoon", "notun bangla golpo", "animal cartoon bangla"
+    ]
+
+    # ৩. ভিডিওর মেটাডেটা এবং এসইও (SEO) সেটিংস
+    request_body = {
+        'snippet': {
+            'title': title,
+            'description': description,
+            'tags': viral_tags,
+            'categoryId': '1',  # 1 = Film & Animation
+            'defaultLanguage': 'bn',       # ভিডিওর টাইটেল ও ডেসক্রিপশন ভাষা (Bangla)
+            'defaultAudioLanguage': 'bn'   # অরিজিনাল অডিও ভাষা (Bangla)
+        },
+        'status': {
+            'privacyStatus': 'public',  
+            'madeForKids': True,        # কার্টুন যেহেতু, তাই Kids ফ্রেন্ডলি রাখা ভালো
+            'selfDeclaredMadeForKids': True
+        },
+        'recordingDetails': {
+            'recordingDate': today_iso  # আজকের রেকর্ডিং ডেট
+        }
+    }
+
+    # ৪. ভিডিও আপলোড রিকোয়েস্ট
+    media = MediaFileUpload(video_path, chunksize=-1, resumable=True, mimetype='video/mp4')
+    request = youtube.videos().insert(
+        part="snippet,status,recordingDetails",
+        body=request_body,
+        media_body=media
     )
 
-    try:
-        youtube = build('youtube', 'v3', credentials=creds)
-        
-        # STORY_JSON_PATH সরাসরি ব্যবহার করা হলো
-        with open(STORY_JSON_PATH, 'r', encoding='utf-8') as f:
-            story_data = json.load(f)
-            
-        title = story_data.get('title', 'মজার বাংলা কার্টুন গল্প')
-        dynamic_tags = story_data.get('tags', [])
-        
-        base_tags = [
-            'bangla cartoon', 'cartoon bangla', 'bengali fairy tales', 
-            'rupkothar golpo', 'bangla golpo', 'kids cartoon', 'shorts feed', 'trending shorts'
-        ]
-        
-        all_tags = list(set(dynamic_tags + base_tags))
-        
-        first_scene = ""
-        if 'scenes' in story_data and len(story_data['scenes']) > 0:
-            first_scene = story_data['scenes'][0].get('narration', '')
-            
-        video_title = f"{title} ✨ | Bangla Cartoon | #Shorts"
-        
-        video_desc = f"""{title} - সম্পূর্ণ নতুন বাংলা কার্টুন গল্প।
+    response = request.execute()
+    video_id = response.get("id")
+    print(f"✅ Video Uploaded Successfully! Video ID: {video_id}")
 
-গল্পের সারাংশ:
-{first_scene} 
-
-সম্পূর্ণ কাহিনী জানতে ভিডিওটি শেষ পর্যন্ত দেখুন! 
-
-👉 চ্যানেলটি সাবস্ক্রাইব করে বেল আইকনটি প্রেস করে রাখুন!
-
-#BanglaCartoon #BengaliFairyTales #ToonMagicBangla #KidsCartoon #BanglaGolpo #Shorts #{title.replace(' ', '')}
-"""
-        
-        print(f"📺 Uploading Video Title: {video_title}")
-        
-        body = {
-            'snippet': {
-                'title': video_title,
-                'description': video_desc,
-                'tags': all_tags,
-                'categoryId': '1' 
-            },
-            'status': {
-                'privacyStatus': 'public',
-                'madeForKids': False  
+    # ৫. প্লেলিস্টে অ্যাড করা (যদি Playlist ID দেওয়া থাকে)
+    if playlist_id and video_id:
+        try:
+            print(f"📂 Adding video to Playlist ID: {playlist_id}...")
+            playlist_body = {
+                'snippet': {
+                    'playlistId': playlist_id,
+                    'resourceId': {
+                        'kind': 'youtube#video',
+                        'videoId': video_id
+                    }
+                }
             }
-        }
-        
-        media = MediaFileUpload(video_path, chunksize=-1, resumable=True)
-        request = youtube.videos().insert(part=','.join(body.keys()), body=body, media_body=media)
-        
-        response = None
-        while response is None:
-            status, response = request.next_chunk()
-            if status:
-                print(f"⏳ Uploading... {int(status.progress() * 100)}%")
-                
-        print(f"✅ YouTube Shorts Uploaded Successfully! Link: https://youtube.com/shorts/{response['id']}")
-        return True
-        
-    except Exception as e:
-        print(f"❌ YouTube Upload Error: {e}")
-        return False
+            youtube.playlistItems().insert(
+                part="snippet",
+                body=playlist_body
+            ).execute()
+            print("✅ Video added to the playlist successfully!")
+        except Exception as e:
+            print(f"⚠️ Failed to add video to playlist: {e}")
+
+    return video_id
