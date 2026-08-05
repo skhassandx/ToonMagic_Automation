@@ -8,7 +8,7 @@ from google.genai import types
 from config.settings import IMAGES_DIR
 
 def generate_images(story_path):
-    print("🎨 Generating Images using Google Gemini (Nano Banana Models)...")
+    print("🎨 Generating Images using Google Gemini (With Free Tier Safety Limits)...")
     
     with open(story_path, 'r', encoding='utf-8') as f:
         story_data = json.load(f)
@@ -21,14 +21,14 @@ def generate_images(story_path):
     client = genai.Client(api_key=api_key)
     images_success = True
 
-    # 🌟 গুগলের লেটেস্ট ইমেজ জেনারেশন মডেল
-    image_models_to_try = ['gemini-3.1-flash-image', 'gemini-3.1-flash-lite-image']
+    # গুগলের লেটেস্ট লাইটওয়েট এবং ফাস্ট ইমেজ মডেল
+    image_models_to_try = ['gemini-3.1-flash-lite-image', 'gemini-3.1-flash-image']
 
     for scene in story_data['scenes']:
         scene_num = scene['scene_number']
         img_path = os.path.join(IMAGES_DIR, f"scene_{scene_num}.jpg")
 
-        # স্কিপ লজিক (আগের ছবি থাকলে নতুন করে বানাবে না)
+        # আগের ছবিগুলো স্কিপ করবে (যাতে খামোখা API লিমিট নষ্ট না হয়)
         if os.path.exists(img_path):
             print(f"⏭️ Scene {scene_num} already exists. Skipping...")
             continue
@@ -49,11 +49,10 @@ def generate_images(story_path):
                         config=types.GenerateImagesConfig(
                             number_of_images=1,
                             output_mime_type="image/jpeg",
-                            aspect_ratio="1:1" # স্কয়ার ইমেজ
+                            aspect_ratio="1:1"
                         )
                     )
                     
-                    # 🌟 ছবি সেভ করা এবং ব্লার প্যাডিং
                     if response.generated_images:
                         image_bytes = response.generated_images[0].image.image_bytes
                         original_img = Image.open(BytesIO(image_bytes)).convert("RGB")
@@ -71,19 +70,23 @@ def generate_images(story_path):
                         
                         print(f"✅ Scene {scene_num} image saved successfully!")
                         image_downloaded = True
+                        
+                        # 🌟 আসল ম্যাজিক: রেট লিমিট থেকে বাঁচতে ২০ সেকেন্ডের ব্রেক!
+                        print("⏳ Respecting Free Tier Limits: Waiting 20 seconds before next request...")
+                        time.sleep(20) 
                         break 
                     else:
                         print("⚠️ No image returned. Switching model...")
                         
                 except Exception as e:
                     print(f"⚠️ Request failed: {e}. Switching model...")
-                    time.sleep(3)
+                    time.sleep(5)
                     
             if image_downloaded:
                 break
             else:
-                print("⏳ Quota limit reached or models busy. Waiting 15s before retry...")
-                time.sleep(15)
+                print("⏳ Quota limit reached or models busy. Waiting 60 seconds before retry...")
+                time.sleep(60) # কোনো কারণে এরর দিলে ১ মিনিট ব্রেক নেবে
 
         if not image_downloaded:
             print(f"❌ CRITICAL ERROR: Failed to generate image for Scene {scene_num}")
