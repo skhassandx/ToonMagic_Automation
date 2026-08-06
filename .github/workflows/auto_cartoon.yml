@@ -38,3 +38,12 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+
+      # 🌟 তৈরি হওয়া ভিডিওটি গিটহাবে সেভ করে রাখা
+      - name: Upload Final Video Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Final-Shorts-Video
+          path: output/final_shorts.mp4
+          retention-days: 5
