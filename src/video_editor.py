@@ -20,17 +20,13 @@ def create_video(story_path):
             return False
 
         audio_clip = AudioFileClip(audio_path)
-        
-        # ১. ছবি লোড এবং ডিউরেশন সেট
+        # ছবিটিকে অডিওর দৈর্ঘ্যের সমান করে ক্লিপ তৈরি
         img_clip = ImageClip(img_path).set_duration(audio_clip.duration)
         
-        # ২. ডাইনামিক জুম-ইন এফেক্ট (Ken Burns)
+        # 🌟 ডাইনামিক জুম-ইন এফেক্ট (Ken Burns) যুক্ত করা হলো
         img_clip = img_clip.resize(lambda t: 1 + 0.05 * (t / audio_clip.duration))
-        
-        # জুম করার পর রেজুলেশন ঠিক রাখতে ক্রপ করে সেন্টারে রাখা
         img_clip = img_clip.set_position('center').crop(x1=0, y1=0, width=1080, height=1920)
 
-        # ৩. অডিও সেট করা
         img_clip = img_clip.set_audio(audio_clip)
 
         clips.append(img_clip)
@@ -38,6 +34,7 @@ def create_video(story_path):
     final_video = concatenate_videoclips(clips, method="compose")
     output_video_path = os.path.join(OUTPUT_DIR, "final_shorts.mp4")
 
+    # 🌟 শর্টস ভিডিও রেন্ডার
     print("⏳ Rendering final video (This might take a few minutes)...")
     final_video.write_videofile(
         output_video_path,
@@ -45,7 +42,7 @@ def create_video(story_path):
         codec="libx264",
         audio_codec="aac",
         preset="ultrafast",
-        threads=4
+        threads=4 # 🌟 রেন্ডার ফাস্ট করার জন্য থ্রেড বাড়ানো হলো
     )
 
     print(f"✅ Video generated successfully: {output_video_path}")
