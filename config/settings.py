@@ -11,9 +11,11 @@ STORY_DIR = os.path.join(DATA_DIR, 'story')  # 🌟 এই লাইনটিই
 OUTPUT_DIR = os.path.join(BASE_DIR, 'output')
 AUDIO_DIR = os.path.join(OUTPUT_DIR, 'audio')
 IMAGES_DIR = os.path.join(OUTPUT_DIR, 'images')
+BACKUP_DIR = os.path.join(BASE_DIR, 'backup') # 🌟 নতুন ব্যাকআপ ফোল্ডার
 
 # ফোল্ডারগুলো আগে থেকে না থাকলে স্বয়ংক্রিয়ভাবে তৈরি করে নেবে
 os.makedirs(STORY_DIR, exist_ok=True)
 os.makedirs(AUDIO_DIR, exist_ok=True)
 os.makedirs(IMAGES_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(BACKUP_DIR, exist_ok=True)
