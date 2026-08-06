@@ -4,7 +4,7 @@ from moviepy.editor import ImageClip, AudioFileClip, concatenate_videoclips
 from config.settings import IMAGES_DIR, AUDIO_DIR, OUTPUT_DIR
 
 def create_video(story_path):
-    print("🎬 Assembling Short Video with Fast Transitions...")
+    print("🎬 Assembling Short Video with Dynamic Zoom Effects...")
     with open(story_path, 'r', encoding='utf-8') as f:
         story_data = json.load(f)
 
@@ -20,8 +20,17 @@ def create_video(story_path):
             return False
 
         audio_clip = AudioFileClip(audio_path)
-        # ছবিটিকে অডিওর দৈর্ঘ্যের সমান করে ক্লিপ তৈরি
+        
+        # ১. ছবি লোড এবং ডিউরেশন সেট
         img_clip = ImageClip(img_path).set_duration(audio_clip.duration)
+        
+        # ২. ডাইনামিক জুম-ইন এফেক্ট (Ken Burns)
+        img_clip = img_clip.resize(lambda t: 1 + 0.05 * (t / audio_clip.duration))
+        
+        # জুম করার পর রেজুলেশন ঠিক রাখতে ক্রপ করে সেন্টারে রাখা
+        img_clip = img_clip.set_position('center').crop(x1=0, y1=0, width=1080, height=1920)
+
+        # ৩. অডিও সেট করা
         img_clip = img_clip.set_audio(audio_clip)
 
         clips.append(img_clip)
@@ -29,13 +38,14 @@ def create_video(story_path):
     final_video = concatenate_videoclips(clips, method="compose")
     output_video_path = os.path.join(OUTPUT_DIR, "final_shorts.mp4")
 
-    # 🌟 শর্টস ভিডিও রেন্ডার
+    print("⏳ Rendering final video (This might take a few minutes)...")
     final_video.write_videofile(
         output_video_path,
         fps=24,
         codec="libx264",
         audio_codec="aac",
-        preset="ultrafast"
+        preset="ultrafast",
+        threads=4
     )
 
     print(f"✅ Video generated successfully: {output_video_path}")
