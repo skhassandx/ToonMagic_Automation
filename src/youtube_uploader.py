@@ -4,18 +4,21 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.credentials import Credentials
 
+# 🌟 প্লেলিস্ট অ্যাড করার জন্য playlist_id=None প্যারামিটার যুক্ত করা হয়েছে
 def upload_to_youtube(video_path, title, description, playlist_id=None):
-    print("🚀 Uploading to YouTube with 100% MAXIMUM SEO Optimization (Comments ON)...")
+    print("🚀 Uploading to YouTube with Full SEO Optimization (Comments ON)...")
     
     client_id = os.environ.get("YOUTUBE_CLIENT_ID")
     client_secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
     refresh_token = os.environ.get("YOUTUBE_REFRESH_TOKEN")
 
     if not all([client_id, client_secret, refresh_token]):
-        raise Exception("❌ CRITICAL: YouTube API Secrets are missing in GitHub!")
+        # 🌟 আপনার দেওয়া হুবহু সেই লাইন
+        raise Exception("❌ CRITICAL: YouTube API Secrets (Client ID, Secret, or Refresh Token) are missing in GitHub!")
 
     try:
-        # 🌟 প্লেলিস্ট অ্যাড করার জন্য ইউটিউবের ফুল স্কোপ দেওয়া হলো
+        # 🌟 ম্যাজিক ট্রিক: Scopes যুক্ত করা হলো, যাতে ['https' এরর আর না আসে
+        # (প্লেলিস্টের জন্য youtube স্কোপটিও যুক্ত করা হলো)
         creds = Credentials(
             token=None,
             refresh_token=refresh_token,
@@ -28,7 +31,7 @@ def upload_to_youtube(video_path, title, description, playlist_id=None):
         youtube = build("youtube", "v3", credentials=creds)
         today_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
-        # 🌟 প্রায় ৫০০ ক্যারেক্টারের এসইও অপটিমাইজড ট্যাগ
+        # 🌟 ৫০০ ক্যারেক্টারের এসইও অপটিমাইজড ট্যাগ
         viral_tags = [
             "bangla cartoon", "bangla golpo", "bengali fairy tales", "cartoon bangla",
             "kids cartoon", "rupkothar golpo", "shorts feed", "trending shorts",
@@ -84,7 +87,7 @@ Welcome to ToonMagic Bangla! Enjoy our latest 3D animated Bengali fairy tales an
         response = request.execute()
         video_id = response.get('id')
         
-        # 🌟 URL প্রিন্ট করা হচ্ছে
+        # 🌟 আপনার দেওয়া BINGO লাইনটি রেখে URL যুক্ত করা হলো
         print(f"✅ BINGO! Video Successfully Uploaded & Published! URL: https://youtu.be/{video_id}")
 
         # 🌟 প্লেলিস্টে যুক্ত করার লজিক
