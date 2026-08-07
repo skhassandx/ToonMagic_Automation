@@ -4,21 +4,17 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.credentials import Credentials
 
-# 🌟 প্লেলিস্ট অ্যাড করার জন্য playlist_id=None প্যারামিটার যুক্ত করা হয়েছে
 def upload_to_youtube(video_path, title, description, playlist_id=None):
-    print("🚀 Uploading to YouTube with Full SEO Optimization (Comments ON)...")
+    print("🚀 Uploading to YouTube with Mega SEO Optimization & Video Location...")
     
     client_id = os.environ.get("YOUTUBE_CLIENT_ID")
     client_secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
     refresh_token = os.environ.get("YOUTUBE_REFRESH_TOKEN")
 
     if not all([client_id, client_secret, refresh_token]):
-        # 🌟 আপনার দেওয়া হুবহু সেই লাইন
-        raise Exception("❌ CRITICAL: YouTube API Secrets (Client ID, Secret, or Refresh Token) are missing in GitHub!")
+        raise Exception("❌ CRITICAL: YouTube API Secrets are missing in GitHub!")
 
     try:
-        # 🌟 ম্যাজিক ট্রিক: Scopes যুক্ত করা হলো, যাতে ['https' এরর আর না আসে
-        # (প্লেলিস্টের জন্য youtube স্কোপটিও যুক্ত করা হলো)
         creds = Credentials(
             token=None,
             refresh_token=refresh_token,
@@ -29,52 +25,52 @@ def upload_to_youtube(video_path, title, description, playlist_id=None):
         )
 
         youtube = build("youtube", "v3", credentials=creds)
-        today_iso = datetime.datetime.utcnow().isoformat() + 'Z'
+        today_iso = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-        # 🌟 পাওয়ারফুল ট্যাগ (প্রায় ৪০০ ক্যারেক্টার)
+        # 🎯 ১. মেগা এসইও টাইটেল ও ডেসক্রিপশন মডিফিকেশন
+        # টাইটেল আকর্ষণীয় এবং হ্যাশট্যাগ পারফেক্ট করা হলো
+        optimized_title = "জাদুর শাঁখ ও স্ফটিক দৈত্য ✨ | Bangla Cartoon #Shorts #Viral"
+        
+        optimized_description = (
+            "জাদুর শাঁখ ও স্ফটিক দৈত্যের এক রোমাঞ্চকর বাংলা রূপকথার গল্প! ✨\n\n"
+            "Enjoy this amazing Bangla Cartoon Moral Story. If you love Bengali Fairy Tales and animated stories, "
+            "make sure to subscribe for more new updates!\n\n"
+            "🔥 Top Queries Solved:\n"
+            "- Bangla Cartoon 2026\n"
+            "- Rupkothar Golpo Shorts\n"
+            "- Thakurmar Jhuli Animation\n"
+            "- Bengali Fairy Tales New\n\n"
+            "#banglacartoon #shorts #viralshorts #trending #fairy tales"
+        )
+
+        # 🎯 ২. ৪২০ ক্যারেক্টারের বেস্ট হাই-ভলিউম এসইও ট্যাগস
         viral_tags = [
-            "bangla cartoon", "bangla golpo", "bengali fairy tales", 
-            "cartoon bangla", "kids cartoon", "rupkothar golpo", 
-            "bangla moral stories", "bengali stories", "bangla animation",
-            "thakurmar jhuli", "shorts feed", "trending shorts",
-            "bhuter golpo", "tuntuni golpo", "bangla mojar cartoon", 
-            "notun bangla golpo", "shishuder golpo", "bangla cartoon 2026", 
-            "animated stories bangla", "bengali kids video", 
-            "bangla short film", "bengali folk tales", "toonmagic bangla"
+            "bangla cartoon", "bangla golpo", "bengali fairy tales", "cartoon bangla", 
+            "kids cartoon", "rupkothar golpo", "bangla moral stories", "bengali stories", 
+            "bangla animation", "thakurmar jhuli", "shorts feed", "trending shorts",
+            "bhuter golpo", "tuntuni golpo", "bangla mojar cartoon", "notun bangla golpo", 
+            "shishuder golpo", "bangla cartoon 2026", "animated stories bangla", "bengali kids video"
         ]
 
-        # 🌟 বিশাল এবং প্রফেশনাল ডেসক্রিপশন
-        seo_description = f"""{description}
-
-আজকের দারুণ মজার বাংলা কার্টুন গল্পে আপনাদের স্বাগতম! 🌟 আমাদের 'ToonMagic Bangla' চ্যানেলে আমরা প্রতিদিন নতুন শিক্ষামূলক, মজার এবং রূপকথার জাদুকরী গল্প নিয়ে আসি। 3D অ্যানিমেশন গল্পগুলো শুধু আনন্দই দেয় না, বরং ভালো শিক্ষাও দেয়। 
-
-ভিডিওটি ভালো লাগলে অবশ্যই লাইক দিন, বন্ধুদের সাথে শেয়ার করুন এবং আমাদের চ্যানেলটি সাবস্ক্রাইব করে বেল আইকনটি বাজিয়ে দিন! আপনার মূল্যবান মতামত অবশ্যই কমেন্ট করে জানাবেন।
-
-Welcome to ToonMagic Bangla! Enjoy our latest 3D animated Bengali fairy tales and moral stories. Don't forget to subscribe!
-
-#BanglaCartoon #BengaliFairyTales #BanglaGolpo #MoralStories #Shorts #ToonMagicBangla #KidsCartoon #RupkotharGolpo #BengaliStory
-"""
-
-        # 🌟 লোকেশন সেটআপ (বাংলাদেশ)
+        # 🎯 ৩. ভিডিও লোকেশন ফিক্স (Bangladesh জিপিএস লোকেশন)
         location_details = {
-            "latitude": 23.8103,
-            "longitude": 90.4125,
+            "latitude": 23.6850,    # বাংলাদেশের ল্যাটিটিউড
+            "longitude": 90.3563,   # বাংলাদেশের লঙ্গিটিউড
             "description": "Bangladesh"
         }
 
         body = {
             'snippet': {
-                'title': f"{title} ✨ | Bangla Cartoon | #Shorts",
-                'description': seo_description,
+                'title': optimized_title,
+                'description': optimized_description,
                 'tags': viral_tags,
-                'categoryId': '1', # Film & Animation
+                'categoryId': '1 film & Animation', # কার্টুনের জন্য বেস্ট ক্যাটাগরি
                 'defaultLanguage': 'bn',
                 'defaultAudioLanguage': 'bn'
             },
             'status': {
                 'privacyStatus': 'public',
-                'madeForKids': False,               # 🌟 কমেন্ট অন রাখার জন্য False
-                'selfDeclaredMadeForKids': False    # 🌟 কমেন্ট অন রাখার জন্য False
+                'selfDeclaredMadeForKids': False
             },
             'recordingDetails': {
                 'recordingDate': today_iso,
@@ -88,13 +84,12 @@ Welcome to ToonMagic Bangla! Enjoy our latest 3D animated Bengali fairy tales an
         response = request.execute()
         video_id = response.get('id')
         
-        # 🌟 আপনার দেওয়া BINGO লাইনটি রেখে URL যুক্ত করা হলো
         print(f"✅ BINGO! Video Successfully Uploaded & Published! URL: https://youtu.be/{video_id}")
 
-        # 🌟 প্লেলিস্টে যুক্ত করার লজিক
+        # 🎯 ৪. সেফ প্লেলিস্ট অ্যাটাচমেন্ট (এরর হ্যান্ডলিং সহ)
         if playlist_id:
             try:
-                print(f"📂 Adding video to Playlist ID: {playlist_id}...")
+                print(f"📂 Attempting to add video to Playlist ID: {playlist_id}...")
                 playlist_body = {
                     'snippet': {
                         'playlistId': playlist_id,
@@ -106,8 +101,8 @@ Welcome to ToonMagic Bangla! Enjoy our latest 3D animated Bengali fairy tales an
                 }
                 youtube.playlistItems().insert(part="snippet", body=playlist_body).execute()
                 print("✅ Video added to the playlist successfully!")
-            except Exception as e:
-                print(f"⚠️ Video uploaded, but failed to add to playlist: {e}")
+            except Exception as playlist_error:
+                print(f"⚠️ Playlist notice: Could not auto-add to playlist ({playlist_error}). Please check your playlist privacy or ID inside YouTube Studio manually.")
 
         return video_id
 
