@@ -31,12 +31,16 @@ def upload_to_youtube(video_path, title, description, playlist_id=None):
         youtube = build("youtube", "v3", credentials=creds)
         today_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
-        # 🌟 নিরাপদ এবং পাওয়ারফুল ট্যাগ (৫০০ ক্যারেক্টারের নিচে)
+        # 🌟 পাওয়ারফুল ট্যাগ (প্রায় ৪০০ ক্যারেক্টার)
         viral_tags = [
             "bangla cartoon", "bangla golpo", "bengali fairy tales", 
             "cartoon bangla", "kids cartoon", "rupkothar golpo", 
             "bangla moral stories", "bengali stories", "bangla animation",
-            "thakurmar jhuli", "shorts feed", "trending shorts"
+            "thakurmar jhuli", "shorts feed", "trending shorts",
+            "bhuter golpo", "tuntuni golpo", "bangla mojar cartoon", 
+            "notun bangla golpo", "shishuder golpo", "bangla cartoon 2026", 
+            "animated stories bangla", "bengali kids video", 
+            "bangla short film", "bengali folk tales", "toonmagic bangla"
         ]
 
         # 🌟 বিশাল এবং প্রফেশনাল ডেসক্রিপশন
