@@ -16,14 +16,14 @@ def generate_story():
 
     client = genai.Client(api_key=api_key)
 
-    # 🌟 আপনার দেওয়া ৩০টি সম্পূর্ণ ভিন্ন ক্যাটাগরি (হুবহু রাখা হলো)
+    # 🌟 আপনার দেওয়া ৩০টি সম্পূর্ণ ভিন্ন ক্যাটাগরি
     genres = [
         "খুব হাসির এবং মজার কার্টুন গল্প", "অত্যন্ত ইমোশনাল এবং দুঃখের গল্প (Sad Story)",
         "শিক্ষামূলক এবং নীতিবাক্যমূলক গল্প (Educational)", "বাচ্চাদের মজার ছড়া বা কবিতা (Nursery Rhymes)",
         "খেলাধুলা এবং বন্ধুত্বের গল্প (Sports)", "ইসলামিক শিক্ষামূলক গল্প (Islamic Education)",
         "হাদিস থেকে নেওয়া ছোট্ট শিক্ষামূলক ঘটনা (Hadith Story)", "রূপকথার জাদুকরী গল্প (Fairy Tale)",
         "ভুতের বা রহস্যময় মজার গল্প (Funny Ghost Story)", "সাইন্স ফিকশন বা মহাকাশ ভ্রমণের গল্প (Sci-Fi/Space)",
-        "চালাক শিয়াল ও বোকা কুমিরের গল্প (Folk Tale)", "সুপারহিরো বাচ্চাদের সাহসিকতার গল্প (Superhero)",
+        "চালাকপদে শিয়াল ও বোকা কুমিরের গল্প (Folk Tale)", "সুপারহিরো বাচ্চাদের সাহসিকতার গল্প (Superhero)",
         "জাদুকরী গাছ ও প্রাণীদের কথা বলার গল্প (Talking Animals)", "গ্রামের সাধারণ জীবন ও মা-বাবার ভালোবাসার গল্প (Village Life)",
         "লোভের পরিণতি নিয়ে শিক্ষামূলক গল্প (Consequences of Greed)", "সততা ও পুরস্কারের গল্প (Honesty & Reward)",
         "স্বাস্থ্য, পরিচ্ছন্নতা ও ভালো অভ্যাসের গল্প (Good Habits)", "টাইম ট্রাভেল বা সময় ভ্রমণের মজার গল্প (Time Travel)",
@@ -37,22 +37,27 @@ def generate_story():
     
     selected_genre = random.choice(genres)
     
-    # 🌟 শর্টসের জন্য সিন এবং টাইম কমানো হলো (৬০ সেকেন্ডের নিচে রাখার জন্য)
     scene_count = random.randint(8, 10) 
     target_duration = random.randint(40, 50) 
 
+    # 🌟 আপনার দেওয়া নতুন এবং শক্তিশালী মাস্টার প্রম্পট (JSON ফরম্যাট সহ)
     prompt = f"""
-    তুমি একজন প্রফেশনাল ইউটিউব শর্টস স্ক্রিপ্ট রাইটার। তোমাকে সম্পূর্ণ নতুন, ইউনিক এবং আকর্ষনীয় একটি বাংলা গল্প লিখতে হবে।
-    আগের কোনো গল্পের সাথে এর বিন্দুমাত্র মিল থাকা যাবে না। সম্পূর্ণ নতুন ক্যারেক্টার এবং নতুন প্লট ব্যবহার করবে।
+    You are a professional YouTube Shorts scriptwriter. Write a short, engaging, and perfectly structured Bengali story script for a 30-second YouTube Shorts video. 
 
-    আজকের গল্পের ধরন: {selected_genre}
+    Target Topic/Category: {selected_genre}
 
-    নির্দেশনা:
-    ১. গল্পটি এমনভাবে লিখবে যেন ভয়েসওভার পড়লে মোট সময় ঠিক {target_duration} সেকেন্ডের কাছাকাছি হয়। কোনোভাবেই ৬০ সেকেন্ড পার হওয়া যাবে না।
-    ২. ভিডিওটি ফাস্ট-পেসড (Fast-paced) অ্যানিমেশন শর্টস হবে, তাই মোট {scene_count} টি ছোট ছোট সিন (Scene) তৈরি করবে।
-    ৩. 🌟 আবেগ ও ভয়েসওভার টোন: প্রতিটি সিনের 'narration'-এ আবেগপূর্ণ শব্দ বা বিস্ময়সূচক অব্যয় (যেমন: ওমা!, হায় হায়!, হাহাহা!, ওরে বাবা!, ইশ!) ব্যবহার করবে, যাতে রোবটিক ভয়েসওভারটিও মানুষের মতো জীবন্ত ও এক্সপ্রেসিভ শোনায়। গল্পের ধরন অনুযায়ী টোন (খুশি, দুঃখ, ভয়, চমক) ফুটিয়ে তুলবে। তবে মনে রাখবে, প্রতিটি 'narration'-এ সর্বোচ্চ ৩ থেকে ৪ টি শব্দ থাকবে। এর বেশি কোনোভাবেই লেখা যাবে না।
-    ৪. 🌟 ছবির এক্সপ্রেশন: প্রতিটি 'image_prompt'-এ ক্যারেক্টারের চেহারার স্পষ্ট এক্সপ্রেশন (যেমন: crying bitterly, laughing out loud, looking extremely surprised, angry face) অবশ্যই উল্লেখ করবে। সাথে "3D Pixar style, highly detailed, colorful, wide landscape, full body character visible" ফরম্যাট ব্যবহার করবে।
-    ৫. আউটপুট অবশ্যই শুদ্ধ JSON ফরম্যাটে দেবে।
+    The story must have a clear beginning, middle, and end. The narrative should flow smoothly and logically. Do NOT just write isolated dialogues or random phrases. Tell a complete story.
+
+    The script must be divided into exactly {scene_count} scenes.
+
+    For each scene, provide two things:
+    1. "narration" (Bengali): A meaningful sentence or two telling the story. It should sound like a professional narrator telling a captivating tale. Keep it concise so it fits within 3-4 seconds per scene. Do not use isolated exclamations like "ওমা!", "হায় হায়!", write proper sentences.
+    2. "image_prompt" (English): A highly detailed description for an AI image generator to create the scene. Describe the character, action, setting, lighting, and mood. Ensure it perfectly matches the narration. Include style tags like "3D Pixar style, highly detailed, colorful, wide landscape, full body character visible".
+
+    Rules:
+    - The story must be in Bengali.
+    - Create a clear plot: Introduce a character, present a problem, show a magical or clever solution, and end with a moral or happy conclusion.
+    - The output MUST be in valid JSON format only, following the exact structure below. Do not include markdown code blocks.
 
     JSON Format:
     {{
@@ -61,15 +66,15 @@ def generate_story():
         "scenes": [
             {{
                 "scene_number": 1,
-                "narration": "ওমা! কী সুন্দর!",
-                "image_prompt": "3D Pixar style, cute boy looking very surprised and happy pointing at a bird, wide angle, full body visible..."
+                "narration": "এক গ্রামে বাস করতো ছোট্ট ছেলে রানা, যে খুব সাহসী ছিল।",
+                "image_prompt": "3D Pixar style, cute cartoon boy with black hair standing in a vibrant green village, smiling bravely, wide angle, highly detailed..."
             }}
         ]
     }}
     """
 
-    # 🌟 আপনার দেওয়া লেটেস্ট ফাইল অনুযায়ী মডেল লিস্ট
-    models_to_try = ['gemini-2.5-pro', 'gemini-3.6-flash', 'gemini-3.5-flash']
+    # 🌟 মডেল লিস্ট
+    models_to_try = ['gemini-3.6-flash', 'gemini-3.5-flash']
 
     for attempt in range(3): 
         for model_name in models_to_try:
