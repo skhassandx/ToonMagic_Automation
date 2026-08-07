@@ -60,7 +60,7 @@ def upload_to_youtube(video_path, title, description, playlist_id=None):
         youtube = build("youtube", "v3", credentials=creds)
         today_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
-        # 🌟 হাইলি টপ এসইও ট্যাগ (Optimized for 421 characters)
+        # 🌟 হাইলি টপ এসইও ট্যাগ (Optimized for ~421 characters to prevent 400 Error)
         viral_tags = [
             "bangla cartoon", "bangla golpo", "bengali fairy tales", 
             "cartoon bangla", "kids cartoon", "rupkothar golpo", 
@@ -79,7 +79,7 @@ def upload_to_youtube(video_path, title, description, playlist_id=None):
         # 🌟 প্রফেশনাল ও হাই-র‍্যাংকিং এসইও ডেসক্রিপশন
         final_description = f"""{description}
 
-আজকের দারুণ মজার বাংলা কার্টুন গল্পে আপনাদের স্বাগতম! 🌟 আমাদের 'ToonMagic Bangla' চ্যানেলে আমরা প্রতিদিন নতুন শিক্ষামূলক, মজার এবং রূপকথার জাদুকরী গল্প নিয়ে আসি। 3D অ্যানিমেশন গল্পগুলো শুধু আনন্দই দেয় না, বরং ভালো শিক্ষাও দেয়। 
+আজকের দারুণ মজার বাংলা কার্টুন গল্পে আপনাদের স্বাগতম! 🌟 আমাদের 'ToonMagic Bangla' চ্যানেলে আমরা প্রতিদিন নতুন শিক্ষামূলক, মজার এবং রূপকথার জাদুকরী গল্প নিয়ে আসি। 3D অ্যানিমেশন গল্পগুলো শুধু আনন্দই দেয় fix না, বরং ভালো শিক্ষাও দেয়। 
 
 ভিডিওটি ভালো লাগলে অবশ্যই লাইক দিন, বন্ধুদের সাথে শেয়ার করুন এবং আমাদের চ্যানেলটি সাবস্ক্রাইব করে বেল আইকনটি বাজিয়ে দিন! 
 
@@ -93,13 +93,7 @@ def upload_to_youtube(video_path, title, description, playlist_id=None):
 #BanglaCartoon #BengaliFairyTales #BanglaGolpo #MoralStories #Shorts #ToonMagicBangla #KidsCartoon #RupkotharGolpo #BengaliStory
 """
 
-        # 🌟 লোকেশন সেটআপ (বাংলাদেশ)
-        location_details = {
-            "latitude": 23.8103,
-            "longitude": 90.4125,
-            "description": "Bangladesh"
-        }
-
+        # 🌟 লোকেশন সেটআপ (১০০% এসইও ফিক্সড)
         body = {
             'snippet': {
                 'title': final_title,
@@ -116,7 +110,11 @@ def upload_to_youtube(video_path, title, description, playlist_id=None):
             },
             'recordingDetails': {
                 'recordingDate': today_iso,
-                'location': location_details
+                'locationDescription': 'Bangladesh',  # 🌟 এটি এখন স্টুডিওতে সঠিকভাবে কাজ করবে
+                'location': {
+                    'latitude': 23.8103,
+                    'longitude': 90.4125
+                }
             }
         }
 
@@ -129,7 +127,7 @@ def upload_to_youtube(video_path, title, description, playlist_id=None):
         
         print(f"✅ BINGO! Video Successfully Uploaded! URL: https://youtu.be/{video_id}")
 
-        # 🧠 অটো-ডিটেক্ট প্লেলিস্ট লজিক কল করা (main.py থেকে আসা playlist_id ইগনোর করে স্মার্ট লজিক কাজ করবে)
+        # 🧠 অটো-ডিটেক্ট প্লেলিস্ট লজিক কল করা
         target_playlist_id, playlist_name = auto_detect_playlist(title, description)
 
         # 📂 ভিডিওটি শুধুমাত্র নির্বাচিত নির্দিষ্ট প্লেলিস্টে যুক্ত করা
