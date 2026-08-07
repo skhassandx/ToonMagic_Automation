@@ -74,7 +74,7 @@ def generate_story():
     """
 
     # 🌟 মডেল লিস্ট
-    models_to_try = ['gemini-3.6-flash', 'gemini-3.5-flash']
+    models_to_try = ['gemini-3.6-flash','gemini-3.6-flash', 'gemini-3.5-flash','gemini-3.0-flash',]
 
     for attempt in range(3): 
         for model_name in models_to_try:
