@@ -7,7 +7,7 @@ from google.genai import types
 from config.settings import STORY_DIR
 
 def generate_story():
-    print("🧠 Generating Dynamic, Emotional & Unique Story using Gemini (With Fallback)...")
+    print("🧠 Generating Dynamic, Fast-Paced Story using Gemini (With Fallback)...")
     
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -37,12 +37,15 @@ def generate_story():
     
     selected_genre = random.choice(genres)
     
-    scene_count = random.randint(8, 10) 
-    target_duration = random.randint(40, 50) 
+    # 🌟 ম্যাজিক ট্রিক: সিন সংখ্যা ৬ থেকে ২০ এর মধ্যে র‍্যান্ডমলি সিলেক্ট হবে!
+    scene_count = random.randint(6, 20) 
+    
+    # প্রতি সিন আনুমানিক ৩ সেকেন্ড ধরে মোট সময় ক্যালকুলেট করা হচ্ছে (Fast pacing)
+    approx_duration = scene_count * 3 
 
-    # 🌟 আপনার দেওয়া নতুন এবং শক্তিশালী মাস্টার প্রম্পট (JSON ফরম্যাট সহ)
+    # 🌟 ডায়নামিক প্রম্পট (ছোট ও দ্রুত ন্যারেশন)
     prompt = f"""
-    You are a professional YouTube Shorts scriptwriter. Write a short, engaging, and perfectly structured Bengali story script for a 30-second YouTube Shorts video. 
+    You are a professional YouTube Shorts scriptwriter. Write a short, engaging, and perfectly structured Bengali story script for an approximately {approx_duration}-second YouTube Shorts video. 
 
     Target Topic/Category: {selected_genre}
 
@@ -51,7 +54,7 @@ def generate_story():
     The script must be divided into exactly {scene_count} scenes.
 
     For each scene, provide two things:
-    1. "narration" (Bengali): A meaningful sentence or two telling the story. It should sound like a professional narrator telling a captivating tale. Keep it concise so it fits within 3-4 seconds per scene. Do not use isolated exclamations like "ওমা!", "হায় হায়!", write proper sentences.
+    1. "narration" (Bengali): A meaningful but VERY SHORT sentence telling the story. Keep it punchy and concise so it fits within 2-3 seconds per scene. Do not use long, complex sentences. Do not use isolated exclamations like "ওমা!", "হায় হায়!", write proper sentences.
     2. "image_prompt" (English): A highly detailed description for an AI image generator to create the scene. Describe the character, action, setting, lighting, and mood. Ensure it perfectly matches the narration. Include style tags like "3D Pixar style, highly detailed, colorful, wide landscape, full body character visible".
 
     Rules:
@@ -66,20 +69,20 @@ def generate_story():
         "scenes": [
             {{
                 "scene_number": 1,
-                "narration": "এক গ্রামে বাস করতো ছোট্ট ছেলে রানা, যে খুব সাহসী ছিল।",
+                "narration": "এক গ্রামে বাস করতো ছোট্ট সাহসী ছেলে রানা।",
                 "image_prompt": "3D Pixar style, cute cartoon boy with black hair standing in a vibrant green village, smiling bravely, wide angle, highly detailed..."
             }}
         ]
     }}
     """
 
-    # 🌟 মডেল লিস্ট
-    models_to_try = ['gemini-3.6-flash','gemini-3.6-flash', 'gemini-3.5-flash','gemini-3.0-flash',]
+    # 🌟 আপনার আগের মতো মাল্টিপল মডেল ফলব্যাক সিস্টেম (৩.৬ কে প্রাইমারি হিসেবে রাখা হয়েছে)
+    models_to_try = ['gemini-3.6-flash', 'gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.0-flash']
 
     for attempt in range(3): 
         for model_name in models_to_try:
             try:
-                print(f"🔄 Attempting with model: {model_name} (Attempt {attempt+1})...")
+                print(f"🔄 Attempting with model: {model_name} | Scenes: {scene_count} | Duration: ~{approx_duration}s (Attempt {attempt+1})...")
                 response = client.models.generate_content(
                     model=model_name,
                     contents=prompt,
