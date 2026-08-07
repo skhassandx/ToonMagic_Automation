@@ -60,15 +60,17 @@ def upload_to_youtube(video_path, title, description, playlist_id=None):
         youtube = build("youtube", "v3", credentials=creds)
         today_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
-        # 🌟 হাইলি টপ এসইও ট্যাগ
+        # 🌟 হাইলি টপ এসইও ট্যাগ (Optimized for 421 characters)
         viral_tags = [
-            "bangla cartoon", "bangla golpo", "bengali fairy tales", "cartoon bangla",
-            "kids cartoon", "rupkothar golpo", "shorts feed", "trending shorts",
-            "bangla moral stories", "tunir golpo", "bengali stories", "bangla animation",
-            "shialer golpo", "bhooter golpo", "bangla cartoon 2026", "bangla short film",
-            "chotoder golpo", "bengali cartoon", "bangla mojar golpo", "fairy tales in bengali",
+            "bangla cartoon", "bangla golpo", "bengali fairy tales", 
+            "cartoon bangla", "kids cartoon", "rupkothar golpo", 
+            "trending shorts", "bangla moral stories", "tunir golpo", 
+            "bengali stories", "bangla animation", "shialer golpo", 
+            "bhooter golpo", "bangla cartoon 2026", "bangla short film", 
+            "chotoder golpo", "bengali cartoon", "bangla mojar golpo", 
             "animal cartoon bangla", "notun bangla golpo", "bangla golpo cartoon", 
-            "bangla fairy tales new", "3d animation bangla", "mojar cartoon bangla", "thakurmar jhuli"
+            "3d animation bangla", "mojar cartoon bangla", "thakurmar jhuli",
+            "shorts feed"
         ]
 
         # 🌟 স্মার্ট ডাইনামিক টাইটেল
