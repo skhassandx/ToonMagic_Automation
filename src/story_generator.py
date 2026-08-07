@@ -37,11 +37,11 @@ def generate_story():
     
     selected_genre = random.choice(genres)
     
-    # 🌟 ম্যাজিক ট্রিক: সিন সংখ্যা ৬ থেকে ২০ এর মধ্যে র‍্যান্ডমলি সিলেক্ট হবে!
-    scene_count = random.randint(6, 20) 
+    # 🌟 ম্যাজিক ট্রিক: সিন সংখ্যা ৭ থেকে ২৫ এর মধ্যে র‍্যান্ডমলি সিলেক্ট হবে!
+    scene_count = random.randint(7, 25) 
     
-    # প্রতি সিন আনুমানিক ৩ সেকেন্ড ধরে মোট সময় ক্যালকুলেট করা হচ্ছে (Fast pacing)
-    approx_duration = scene_count * 3 
+    # প্রতি সিন আনুমানিক ৪ সেকেন্ড ধরে মোট সময় ক্যালকুলেট করা হচ্ছে (Fast pacing)
+    approx_duration = scene_count * 4 
 
     # 🌟 ডায়নামিক প্রম্পট (ছোট ও দ্রুত ন্যারেশন)
     prompt = f"""
