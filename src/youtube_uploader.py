@@ -36,7 +36,8 @@ def auto_detect_playlist(title, description):
         # কোনো স্পেসিফিক ক্যাটাগরি না পেলে ডিফল্ট হিসেবে 'রূপকথা' তে যাবে
         return PLAYLISTS["fairy"], "রূপকথা ও জাদুকরী গল্প ✨"
 
-def upload_to_youtube(video_path, title, description, provided_playlist_id=None):
+# 👉 এখানে 'playlist_id' ঠিক করা হয়েছে, যাতে আর এরর না আসে!
+def upload_to_youtube(video_path, title, description, playlist_id=None):
     print("🚀 Uploading to YouTube with 100% Best SEO, Auto-Playlist Routing & Location...")
     
     client_id = os.environ.get("YOUTUBE_CLIENT_ID")
@@ -59,7 +60,7 @@ def upload_to_youtube(video_path, title, description, provided_playlist_id=None)
         youtube = build("youtube", "v3", credentials=creds)
         today_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
-        # 🌟 হাইলি টপ এসইও ট্যাগ (৪৫০ ক্যারেক্টারের মধ্যে সবচেয়ে পাওয়ারফুল কিওয়ার্ড)
+        # 🌟 হাইলি টপ এসইও ট্যাগ
         viral_tags = [
             "bangla cartoon", "bangla golpo", "bengali fairy tales", "cartoon bangla",
             "kids cartoon", "rupkothar golpo", "shorts feed", "trending shorts",
@@ -70,7 +71,7 @@ def upload_to_youtube(video_path, title, description, provided_playlist_id=None)
             "bangla fairy tales new", "3d animation bangla", "mojar cartoon bangla", "thakurmar jhuli"
         ]
 
-        # 🌟 স্মার্ট ডাইনামিক টাইটেল (ইউটিউব লিমিট ১০০ ক্যারেক্টারের মধ্যে সেফ রাখা হলো)
+        # 🌟 স্মার্ট ডাইনামিক টাইটেল
         final_title = f"{title[:70]} ✨ | Bangla Cartoon #Shorts"
         
         # 🌟 প্রফেশনাল ও হাই-র‍্যাংকিং এসইও ডেসক্রিপশন
@@ -126,7 +127,7 @@ def upload_to_youtube(video_path, title, description, provided_playlist_id=None)
         
         print(f"✅ BINGO! Video Successfully Uploaded! URL: https://youtu.be/{video_id}")
 
-        # 🧠 অটো-ডিটেক্ট প্লেলিস্ট লজিক কল করা
+        # 🧠 অটো-ডিটেক্ট প্লেলিস্ট লজিক কল করা (main.py থেকে আসা playlist_id ইগনোর করে স্মার্ট লজিক কাজ করবে)
         target_playlist_id, playlist_name = auto_detect_playlist(title, description)
 
         # 📂 ভিডিওটি শুধুমাত্র নির্বাচিত নির্দিষ্ট প্লেলিস্টে যুক্ত করা
