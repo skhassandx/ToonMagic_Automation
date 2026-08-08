@@ -1,8 +1,6 @@
 name: run-pipeline
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # প্রতিদিন বাংলাদেশ সময় সকাল ৬টায় অটো রান হবে
   workflow_dispatch: # ম্যানুয়ালি চালানোর জন্য
 
 jobs:
